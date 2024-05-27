@@ -60,7 +60,7 @@ class ImportScheduleUtility implements SingletonInterface
      *
      * @param string|null $importType Optional data type
      *
-     * @return array[]
+     * @return mixed|false
      */
     public function countUnprocessedScheduleEntries($importType = null)
     {
@@ -72,9 +72,7 @@ class ImportScheduleUtility implements SingletonInterface
         }
         $queryBuilder->count('*')
             ->from(self::TABLE_IMPORT_ROW);
-        if (!empty($conditions)) {
-            $queryBuilder->where(...$conditions);
-        }
+        $queryBuilder->where(...$conditions);
         return $queryBuilder->execute()->fetchOne();
     }
 
@@ -112,8 +110,8 @@ class ImportScheduleUtility implements SingletonInterface
      * @param string $importMethod
      * @param array $data
      * @param int $lastModifiedTstamp
-     * @param null $dataHash
-     * @param null $previousItem
+     * @param ?string $dataHash
+     * @param ?array<string, mixed> $previousItem
      */
     public function saveQueueItem(
         $importId,
@@ -184,13 +182,13 @@ class ImportScheduleUtility implements SingletonInterface
 
     /**
      * Clean up old queue items
-     * @param string $timModifier
+     * @param string $timeModifier
      */
-    public function cleanUp($timModifier = '-1 week')
+    public function cleanUp(string $timeModifier = '-1 week')
     {
         $deleteQueryBuilder = $this->getScheduleQueryBuilder();
         $deleteQueryBuilder->delete(self::TABLE_IMPORT_ROW)
-            ->where('crdate < ' . strtotime($timModifier))
+            ->where('crdate < ' . strtotime($timeModifier))
             ->execute();
     }
 

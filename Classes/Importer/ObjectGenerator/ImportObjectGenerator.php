@@ -84,10 +84,10 @@ abstract class ImportObjectGenerator implements SingletonInterface
 
     /**
      * @param string $class
-     * @param array $dataArray
+     * @param array<string, mixed> $dataArray
      * @return ImportedModelInterface[]
      */
-    public function generateMultiple($class, $dataArray)
+    public function generateMultiple(string $class, array $dataArray): array
     {
         $objects = [];
         if(!empty($dataArray)) {
@@ -109,10 +109,10 @@ abstract class ImportObjectGenerator implements SingletonInterface
     /**
      * @param string $class
      * @param int $importId
-     * @param array $data
-     * @return ImportedModelInterface
+     * @param ?array<string, mixed> $data
+     * @return ?ImportedModelInterface
      */
-    public function generate($class, $importId, $data = null)
+    public function generate(string $class, int $importId, ?array $data = null)
     {
         if (empty($importId)) {
             return null;
@@ -152,9 +152,9 @@ abstract class ImportObjectGenerator implements SingletonInterface
     /**
      * @param string $class
      * @param ImportedModelInterface $object
-     * @param array $data
+     * @param array<string, mixed> $data
      */
-    protected function assignClassSpecificProperties($class, $object, $data)
+    protected function assignClassSpecificProperties(string $class, ImportedModelInterface $object, array $data): void
     {
         switch ($class) {
             case Category::class:
@@ -195,7 +195,7 @@ abstract class ImportObjectGenerator implements SingletonInterface
         }
     }
 
-    protected function setDataChanged()
+    protected function setDataChanged(): void
     {
         $this->dataChanged = true;
     }
@@ -203,7 +203,7 @@ abstract class ImportObjectGenerator implements SingletonInterface
     /**
      * @return bool
      */
-    public function getDataChanged()
+    public function getDataChanged(): bool
     {
         return $this->dataChanged;
     }
@@ -211,63 +211,72 @@ abstract class ImportObjectGenerator implements SingletonInterface
     /**
      * @param string $class
      * @param ImportedModelInterface|Category $object
-     * @param array $data
+     * @param array<string, mixed> $data
+     * @return void
      */
-    protected abstract function assignCategoryProperties($class, $object, $data);
+    abstract protected function assignCategoryProperties(string $class, ImportedModelInterface $object, array $data): void;
 
     /**
      * @param string $class
      * @param ImportedModelInterface|Event $object
-     * @param array $data
+     * @param array<string, mixed> $data
+     * @return void
      */
-    protected abstract function assignEventProperties($class, $object, $data);
+    abstract protected function assignEventProperties(string $class, ImportedModelInterface $object, array $data): void;
 
     /**
      * @param string $class
      * @param ImportedModelInterface|FilterCategory $object
-     * @param array $data
+     * @param array<string, mixed> $data
+     * @return void
      */
-    protected abstract function assignFilterCategoryProperties($class, $object, $data);
+    abstract protected function assignFilterCategoryProperties(string $class, ImportedModelInterface $object, array $data): void;
 
     /**
      * @param string $class
      * @param ImportedModelInterface|Location $object
-     * @param array $data
+     * @param array<string, mixed> $data
+     * @return void
      */
-    protected abstract function assignLocationProperties($class, $object, $data);
+    abstract protected function assignLocationProperties(string $class, ImportedModelInterface $object, array $data): void;
 
     /**
      * @param string $class
      * @param ImportedModelInterface|Organizer $object
-     * @param array $data
+     * @param array<string, mixed> $data
+     * @return void
      */
-    protected abstract function assignOrganizerProperties($class, $object, $data);
+    abstract protected function assignOrganizerProperties(string $class, ImportedModelInterface $object, array $data): void;
 
     /**
      * @param string $class
      * @param ImportedModelInterface|Speaker $object
-     * @param array $data
+     * @param array<string, mixed> $data
+     * @return void
      */
-    protected abstract function assignSpeakerProperties($class, $object, $data);
+    abstract protected function assignSpeakerProperties(string $class, ImportedModelInterface $object, array $data): void;
 
     /**
      * @param string $class
      * @param ImportedModelInterface|TargetGroup $object
-     * @param array $data
+     * @param array<string, mixed> $data
+     * @return void
      */
-    protected abstract function assignTargetGroupProperties($class, $object, $data);
+    abstract protected function assignTargetGroupProperties(string $class, ImportedModelInterface $object, array $data): void;
 
     /**
      * @param string $class
      * @param ImportedModelInterface|ViewList $object
-     * @param array $data
+     * @param array<string, mixed> $data
+     * @return void
      */
-    protected abstract function assignViewListProperties($class, $object, $data);
+    abstract protected function assignViewListProperties(string $class, ImportedModelInterface $object, array $data): void;
 
     /**
      * @param string $class
      * @param ImportedModelInterface|TimeRange $object
-     * @param array $data
+     * @param array<string, mixed> $data
+     * @return void
      */
-    protected abstract function assignTimeRangeProperties($class, $object, $data);
+    abstract protected function assignTimeRangeProperties(string $class, ImportedModelInterface $object, array $data): void;
 }

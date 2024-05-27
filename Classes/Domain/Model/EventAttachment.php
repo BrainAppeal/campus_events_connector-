@@ -21,27 +21,27 @@ class EventAttachment extends AbstractImportedEntity implements BelongsToEventIn
 {
 
     /**
-     * @var \BrainAppeal\CampusEventsConnector\Domain\Model\Event
+     * @var ?\BrainAppeal\CampusEventsConnector\Domain\Model\Event
      */
     protected $event;
 
     /**
      * name
      *
-     * @var string
+     * @var ?string
      */
     protected $name = '';
 
     /**
      * fileHash
      *
-     * @var string
+     * @var ?string
      */
     protected $fileHash = '';
 
     /**
      * Image
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
+     * @var ?\TYPO3\CMS\Extbase\Domain\Model\FileReference
      * @TYPO3\CMS\Extbase\Annotation\ORM\Cascade("remove")
      */
     protected $attachmentFile;
@@ -65,9 +65,9 @@ class EventAttachment extends AbstractImportedEntity implements BelongsToEventIn
     /**
      * Returns the name
      *
-     * @return string $name
+     * @return ?string $name
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -75,42 +75,42 @@ class EventAttachment extends AbstractImportedEntity implements BelongsToEventIn
     /**
      * Sets the name
      *
-     * @param string $name
+     * @param ?string $name
      * @return void
      */
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
     /**
-     * @return string
+     * @return ?string
      */
-    public function getFileHash()
+    public function getFileHash(): ?string
     {
         return $this->fileHash;
     }
 
     /**
-     * @param string $fileHash
+     * @param ?string $fileHash
      */
-    public function setFileHash($fileHash)
+    public function setFileHash(?string $fileHash): void
     {
         $this->fileHash = $fileHash;
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference
+     * @return ?\TYPO3\CMS\Extbase\Domain\Model\FileReference
      */
-    public function getAttachmentFile()
+    public function getAttachmentFile(): ?\TYPO3\CMS\Extbase\Domain\Model\FileReference
     {
         return $this->attachmentFile;
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Domain\Model\FileReference
+     * @param ?\TYPO3\CMS\Extbase\Domain\Model\FileReference $attachmentFile
      */
-    public function setAttachmentFile($attachmentFile)
+    public function setAttachmentFile(?\TYPO3\CMS\Extbase\Domain\Model\FileReference $attachmentFile): void
     {
         $this->attachmentFile = $attachmentFile;
     }

@@ -61,7 +61,7 @@ class ImportCommand extends Command
      * @param OutputInterface $output
      * @return int
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         Bootstrap::initializeBackendAuthentication();
         $baseUri = $input->getArgument('baseuri');

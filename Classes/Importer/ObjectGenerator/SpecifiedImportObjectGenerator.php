@@ -14,7 +14,9 @@
 namespace BrainAppeal\CampusEventsConnector\Importer\ObjectGenerator;
 
 use BrainAppeal\CampusEventsConnector\Domain\Model\Category;
+use BrainAppeal\CampusEventsConnector\Domain\Model\Event;
 use BrainAppeal\CampusEventsConnector\Domain\Model\FilterCategory;
+use BrainAppeal\CampusEventsConnector\Domain\Model\ImportedModelInterface;
 use BrainAppeal\CampusEventsConnector\Domain\Model\Location;
 use BrainAppeal\CampusEventsConnector\Domain\Model\Organizer;
 use BrainAppeal\CampusEventsConnector\Domain\Model\Speaker;
@@ -29,16 +31,18 @@ class SpecifiedImportObjectGenerator extends ImportObjectGenerator
     /**
      * @inheritdoc
      */
-    protected function assignCategoryProperties($class, $object, $data)
+    protected function assignCategoryProperties(string $class, ImportedModelInterface $object, array $data): void
     {
+        /** @var Category $object */
         $object->setName($data['name']);
     }
 
     /**
      * @inheritdoc
      */
-    protected function assignEventProperties($class, $object, $data)
+    protected function assignEventProperties(string $class, ImportedModelInterface $object, array $data): void
     {
+        /** @var Event $object */
         if (empty($object->getHash()) || $object->getHash() != $data['hash']) {
             $this->setDataChanged();
         }
@@ -121,8 +125,9 @@ class SpecifiedImportObjectGenerator extends ImportObjectGenerator
     /**
      * @inheritdoc
      */
-    protected function assignFilterCategoryProperties($class, $object, $data)
+    protected function assignFilterCategoryProperties(string $class, ImportedModelInterface $object, array $data): void
     {
+        /** @var FilterCategory $object */
         $object->setName($data['name']);
         $object->setParent($this->generate($class, $data['parent_id'], null));
     }
@@ -130,8 +135,9 @@ class SpecifiedImportObjectGenerator extends ImportObjectGenerator
     /**
      * @inheritdoc
      */
-    protected function assignLocationProperties($class, $object, $data)
+    protected function assignLocationProperties(string $class, ImportedModelInterface $object, array $data): void
     {
+        /** @var Location $object */
         $object->setName($data['name']);
         $object->setStreetName($data['street_name'] ?? '');
         $object->setTown($data['town'] ?? '');
@@ -141,16 +147,18 @@ class SpecifiedImportObjectGenerator extends ImportObjectGenerator
     /**
      * @inheritdoc
      */
-    protected function assignOrganizerProperties($class, $object, $data)
+    protected function assignOrganizerProperties(string $class, ImportedModelInterface $object, array $data): void
     {
+        /** @var Organizer $object */
         $object->setName($data['name']);
     }
 
     /**
      * @inheritdoc
      */
-    protected function assignSpeakerProperties($class, $object, $data)
+    protected function assignSpeakerProperties(string $class, ImportedModelInterface $object, array $data): void
     {
+        /** @var Speaker $object */
         $object->setTitle($data['title'] ?? '');
         $object->setFirstName($data['first_name'] ?? '');
         $object->setLastName($data['last_name'] ?? '');
@@ -159,24 +167,27 @@ class SpecifiedImportObjectGenerator extends ImportObjectGenerator
     /**
      * @inheritdoc
      */
-    protected function assignTargetGroupProperties($class, $object, $data)
+    protected function assignTargetGroupProperties(string $class, ImportedModelInterface $object, array $data): void
     {
+        /** @var TargetGroup $object */
         $object->setName($data['name']);
     }
 
     /**
      * @inheritdoc
      */
-    protected function assignViewListProperties($class, $object, $data)
+    protected function assignViewListProperties(string $class, ImportedModelInterface $object, array $data): void
     {
+        /** @var ViewList $object */
         $object->setName($data['name']);
     }
 
     /**
      * @inheritdoc
      */
-    protected function assignTimeRangeProperties($class, $object, $data)
+    protected function assignTimeRangeProperties(string $class, ImportedModelInterface $object, array $data): void
     {
+        /** @var TimeRange $object */
         if ($tstamp = $this->strToTime($data['end_date'])) {
             $object->setEndTstamp($tstamp);
         }
@@ -195,7 +206,7 @@ class SpecifiedImportObjectGenerator extends ImportObjectGenerator
      */
     protected function strToTime($dateValue)
     {
-        if (($tstamp = strtotime($dateValue)) && $tstamp <= self::UNIX_TIMESTAMP_MAX) {
+        if (!empty($dateValue) && ($tstamp = strtotime($dateValue)) && $tstamp <= self::UNIX_TIMESTAMP_MAX) {
             return $tstamp;
         }
         return false;

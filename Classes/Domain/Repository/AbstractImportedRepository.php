@@ -13,9 +13,12 @@
 
 namespace BrainAppeal\CampusEventsConnector\Domain\Repository;
 
+use BrainAppeal\CampusEventsConnector\Domain\Model\AbstractImportedEntity;
 use BrainAppeal\CampusEventsConnector\Domain\Model\ImportedModelInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Class AbstractImportedRepository
@@ -25,8 +28,11 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
  * @license   GPL-2 (www.gnu.org/licenses/gpl-2.0)
  * @link      https://www.brain-appeal.com/
  * @since     2019-02-13
+ *
+ * @template T of AbstractImportedEntity
+ * @extends Repository<AbstractImportedEntity>
  */
-abstract class AbstractImportedRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+abstract class AbstractImportedRepository extends Repository
 {
     /**
      * @var string
@@ -36,7 +42,7 @@ abstract class AbstractImportedRepository extends \TYPO3\CMS\Extbase\Persistence
     /**
      * @param null|int|int[] $pid
      */
-    protected function setPidRestriction($pid)
+    protected function setPidRestriction($pid): void
     {
         /** @var Typo3QuerySettings $defaultQuerySettings */
         $defaultQuerySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
@@ -113,7 +119,7 @@ abstract class AbstractImportedRepository extends \TYPO3\CMS\Extbase\Persistence
      * @param null|int|int[] $pid
      * @return ImportedModelInterface|null
      */
-    public function findByImportId(int $importId, $pid = null)
+    public function findByImportId(int $importId, $pid = null): ?ImportedModelInterface
     {
         $this->setPidRestriction($pid);
 
@@ -138,7 +144,7 @@ abstract class AbstractImportedRepository extends \TYPO3\CMS\Extbase\Persistence
      * @param int $pid
      * @return ImportedModelInterface
      */
-    public function createNewModelInstance(string $importSource, int $importId, int $pid)
+    public function createNewModelInstance(string $importSource, int $importId, int $pid): ImportedModelInterface
     {
         /** @var ImportedModelInterface $object */
         $object = GeneralUtility::makeInstance($this->objectType);
@@ -154,10 +160,10 @@ abstract class AbstractImportedRepository extends \TYPO3\CMS\Extbase\Persistence
      *
      * @return string
      */
-    public function getImportTableName()
+    public function getImportTableName(): string
     {
         if (null === $this->importTableName) {
-            $dataMapper = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory::class);
+            $dataMapper = GeneralUtility::makeInstance(DataMapFactory::class);
             $this->importTableName = $dataMapper->buildDataMap($this->objectType)->getTableName();
         }
 
@@ -168,9 +174,9 @@ abstract class AbstractImportedRepository extends \TYPO3\CMS\Extbase\Persistence
      * @param int $timestamp
      * @param string $importSource
      * @param null|int|int[] $pid
-     * @return ImportedModelInterface[]
+     * @return array|AbstractImportedEntity[]
      */
-    public function findByNotImportedSince($timestamp, $importSource, $pid = null)
+    public function findByNotImportedSince(int $timestamp, string $importSource, $pid = null): array
     {
         $this->setPidRestriction($pid);
 
@@ -180,12 +186,12 @@ abstract class AbstractImportedRepository extends \TYPO3\CMS\Extbase\Persistence
             $query->lessThan('ceImportedAt', $timestamp)
         ));
 
-        $result = $query->execute();
-
-        return $result->toArray();
+        $result = $query->execute()->toArray();
+        /** @var AbstractImportedEntity[] $result */
+        return $result;
     }
 
-    public function persistAll()
+    public function persistAll(): void
     {
         $this->persistenceManager->persistAll();
     }

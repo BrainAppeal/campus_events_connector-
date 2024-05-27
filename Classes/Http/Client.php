@@ -14,10 +14,8 @@
 namespace BrainAppeal\CampusEventsConnector\Http;
 
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
-use TYPO3\CMS\Core\Http\HttpRequest;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 

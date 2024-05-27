@@ -14,6 +14,8 @@
 
 namespace BrainAppeal\CampusEventsConnector\Domain\Model;
 
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+
 /**
  * Events
  */
@@ -47,105 +49,105 @@ class Event extends AbstractImportedEntity
     /**
      * url
      *
-     * @var string
+     * @var ?string
      */
     protected $url = '';
 
     /**
      * External order url
      *
-     * @var string
+     * @var ?string
      */
     protected $externalOrderUrl = '';
 
     /**
      * External order email address
      *
-     * @var string
+     * @var ?string
      */
     protected $externalOrderEmailAddress = '';
 
     /**
      * Direct registration url
      *
-     * @var string
+     * @var ?string
      */
     protected $directRegistrationUrl = '';
 
     /**
      * name
      *
-     * @var string
+     * @var ?string
      */
     protected $name = '';
 
     /**
      * subtitle
      *
-     * @var string
+     * @var ?string
      */
     protected $subtitle = '';
 
     /**
      * eventNumber
      *
-     * @var string
+     * @var ?string
      */
     protected $eventNumber = '';
 
     /**
      * disturberMessage
      *
-     * @var string
+     * @var ?string
      */
     protected $disturberMessage = '';
 
     /**
      * description
      *
-     * @var string
+     * @var ?string
      */
     protected $description = '';
 
     /**
      * shortDescription
      *
-     * @var string
+     * @var ?string
      */
     protected $shortDescription = '';
 
     /**
      * sponsorsTitle
      *
-     * @var string
+     * @var ?string
      */
     protected $sponsorsTitle = '';
 
     /**
      * referentsTitle
      *
-     * @var string
+     * @var ?string
      */
     protected $referentsTitle = '';
 
     /**
      * seoTitle
      *
-     * @var string
+     * @var ?string
      */
     protected $seoTitle = '';
 
     /**
      * seoDescription
      *
-     * @var string
+     * @var ?string
      */
     protected $seoDescription = '';
 
     /**
      * eventAttendanceMode
      *
-     * @var string
+     * @var ?string
      */
     protected $eventAttendanceMode = '';
 
@@ -167,7 +169,7 @@ class Event extends AbstractImportedEntity
     /**
      * newsText
      *
-     * @var string
+     * @var ?string
      * @deprecated
      */
     protected $newsText = '';
@@ -175,40 +177,40 @@ class Event extends AbstractImportedEntity
     /**
      * learningObjective
      *
-     * @var string
+     * @var ?string
      * @deprecated
      */
     protected $learningObjective = '';
 
     /**
      * alternativeEvents
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Event>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Event>
      */
     protected $alternativeEvents;
 
     /**
      * images
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
+     * @var ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
      * @deprecated
      */
     protected $images;
 
     /**
      * attachments
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
+     * @var ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
      * @deprecated
      */
     protected $attachments;
 
     /**
      * eventAttachments
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\EventAttachment>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\EventAttachment>
      */
     protected $eventAttachments;
 
     /**
      * eventImages
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\EventImage>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\EventImage>
      */
     protected $eventImages;
 
@@ -246,7 +248,7 @@ class Event extends AbstractImportedEntity
     /**
      * speakers
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Speaker>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Speaker>
      * @deprecated
      */
     protected $speakers;
@@ -254,28 +256,28 @@ class Event extends AbstractImportedEntity
     /**
      * referents
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Referent>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Referent>
      */
     protected $referents;
 
     /**
      * sponsors
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Sponsor>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Sponsor>
      */
     protected $sponsors;
 
     /**
      * contactPersons
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\ContactPerson>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\ContactPerson>
      */
     protected $contactPersons;
 
     /**
      * timeRanges
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange>
      * @TYPO3\CMS\Extbase\Annotation\ORM\Cascade("remove")
      */
     protected $timeRanges;
@@ -283,7 +285,7 @@ class Event extends AbstractImportedEntity
     /**
      * eventSessions
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\EventSession>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\EventSession>
      * @TYPO3\CMS\Extbase\Annotation\ORM\Cascade("remove")
      */
     protected $eventSessions;
@@ -298,49 +300,49 @@ class Event extends AbstractImportedEntity
     /**
      * categories
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Category>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Category>
      */
     protected $categories;
 
     /**
      * organizer
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Organizer>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Organizer>
      */
     protected $organizer;
 
     /**
      * targetGroups
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TargetGroup>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TargetGroup>
      */
     protected $targetGroups;
 
     /**
      * viewLists
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\ViewList>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\ViewList>
      */
     protected $viewLists = null;
 
     /**
      * filterCategories
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\FilterCategory>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\FilterCategory>
      */
     protected $filterCategories;
 
     /**
      * eventTicketPriceVariants
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\EventTicketPriceVariant>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\EventTicketPriceVariant>
      */
     protected $eventTicketPriceVariants;
 
     /**
      * locations
      *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Location>
+     * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Location>
      */
     protected $locations;
 
@@ -371,24 +373,24 @@ class Event extends AbstractImportedEntity
      */
     protected function initStorageObjects()
     {
-        $this->speakers = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->timeRanges = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->categories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->organizer = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->filterCategories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->targetGroups = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->images = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->attachments = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->alternativeEvents = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->eventAttachments = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->eventImages = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->referents = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->sponsors = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->contactPersons = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->eventSessions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->eventTicketPriceVariants = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->locations = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-        $this->viewLists = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+        $this->speakers = new ObjectStorage();
+        $this->timeRanges = new ObjectStorage();
+        $this->categories = new ObjectStorage();
+        $this->organizer = new ObjectStorage();
+        $this->filterCategories = new ObjectStorage();
+        $this->targetGroups = new ObjectStorage();
+        $this->images = new ObjectStorage();
+        $this->attachments = new ObjectStorage();
+        $this->alternativeEvents = new ObjectStorage();
+        $this->eventAttachments = new ObjectStorage();
+        $this->eventImages = new ObjectStorage();
+        $this->referents = new ObjectStorage();
+        $this->sponsors = new ObjectStorage();
+        $this->contactPersons = new ObjectStorage();
+        $this->eventSessions = new ObjectStorage();
+        $this->eventTicketPriceVariants = new ObjectStorage();
+        $this->locations = new ObjectStorage();
+        $this->viewLists = new ObjectStorage();
     }
 
     /**
@@ -418,13 +420,13 @@ class Event extends AbstractImportedEntity
     /**
      * Returns the speakers
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Speaker> speakers
+     * @return ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Speaker> speakers
      * @deprecated
      */
     public function getSpeakers()
     {
         if (null === $this->speakers) {
-            $this->speakers = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+            $this->speakers = new ObjectStorage();
         }
         return $this->speakers;
     }
@@ -432,11 +434,11 @@ class Event extends AbstractImportedEntity
     /**
      * Sets the speakers
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Speaker> $speakers
+     * @param ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Speaker> $speakers
      * @return void
      * @deprecated
      */
-    public function setSpeakers(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $speakers)
+    public function setSpeakers(ObjectStorage $speakers)
     {
         $this->speakers = $speakers;
     }
@@ -710,7 +712,7 @@ class Event extends AbstractImportedEntity
     /**
      * Returns the images
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference> images
+     * @return ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference> images
      * @deprecated
      */
     public function getImages()
@@ -721,11 +723,11 @@ class Event extends AbstractImportedEntity
     /**
      * Sets the images
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference> $images
+     * @param ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference> $images
      * @return void
      * @deprecated
      */
-    public function setImages(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $images)
+    public function setImages(ObjectStorage $images)
     {
         $this->images = $images;
     }
@@ -757,7 +759,7 @@ class Event extends AbstractImportedEntity
     /**
      * Returns the attachments
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference> attachments
+     * @return ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference> attachments
      * @deprecated
      */
     public function getAttachments()
@@ -768,11 +770,11 @@ class Event extends AbstractImportedEntity
     /**
      * Sets the attachments
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference> $attachments
+     * @param ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference> $attachments
      * @return void
      * @deprecated
      */
-    public function setAttachments(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $attachments)
+    public function setAttachments(ObjectStorage $attachments)
     {
         $this->attachments = $attachments;
     }
@@ -928,12 +930,12 @@ class Event extends AbstractImportedEntity
     /**
      * Returns the categories
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Category> $categories
+     * @return ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Category> $categories
      */
     public function getCategories()
     {
         if (null === $this->categories) {
-            $this->categories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+            $this->categories = new ObjectStorage();
         }
         return $this->categories;
     }
@@ -941,10 +943,10 @@ class Event extends AbstractImportedEntity
     /**
      * Sets the categories
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Category> $categories
+     * @param ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Category> $categories
      * @return void
      */
-    public function setCategories(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $categories)
+    public function setCategories(ObjectStorage $categories)
     {
         $this->categories = $categories;
     }
@@ -974,12 +976,12 @@ class Event extends AbstractImportedEntity
     /**
      * Returns the organizer
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Organizer> $organizer
+     * @return ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Organizer> $organizer
      */
     public function getOrganizer()
     {
         if (null === $this->organizer) {
-            $this->organizer = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+            $this->organizer = new ObjectStorage();
         }
         return $this->organizer;
     }
@@ -987,10 +989,10 @@ class Event extends AbstractImportedEntity
     /**
      * Sets the organizer
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Organizer> $organizer
+     * @param ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Organizer> $organizer
      * @return void
      */
-    public function setOrganizer(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $organizer)
+    public function setOrganizer(ObjectStorage $organizer)
     {
         $this->organizer = $organizer;
     }
@@ -1020,12 +1022,12 @@ class Event extends AbstractImportedEntity
     /**
      * Returns the timeRanges
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange> timeRanges
+     * @return ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange> timeRanges
      */
     public function getTimeRanges()
     {
         if (null === $this->timeRanges) {
-            $this->timeRanges = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+            $this->timeRanges = new ObjectStorage();
         }
         return $this->timeRanges;
     }
@@ -1033,11 +1035,11 @@ class Event extends AbstractImportedEntity
     /**
      * Sets the timeRanges
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange> $timeRanges
+     * @param ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange> $timeRanges
      * @return void
      * @deprecated
      */
-    public function setTimeRanges(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $timeRanges)
+    public function setTimeRanges(ObjectStorage $timeRanges)
     {
         $this->timeRanges = $timeRanges;
     }
@@ -1067,12 +1069,12 @@ class Event extends AbstractImportedEntity
     /**
      * Returns the targetGroups
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TargetGroup> targetGroups
+     * @return ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TargetGroup> targetGroups
      */
     public function getTargetGroups()
     {
         if (null === $this->targetGroups) {
-            $this->targetGroups = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+            $this->targetGroups = new ObjectStorage();
         }
         return $this->targetGroups;
     }
@@ -1080,10 +1082,10 @@ class Event extends AbstractImportedEntity
     /**
      * Sets the targetGroups
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TargetGroup> $targetGroups
+     * @param ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TargetGroup> $targetGroups
      * @return void
      */
-    public function setTargetGroups(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $targetGroups)
+    public function setTargetGroups(ObjectStorage $targetGroups)
     {
         $this->targetGroups = $targetGroups;
     }
@@ -1113,12 +1115,12 @@ class Event extends AbstractImportedEntity
     /**
      * Returns the filterCategories
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\FilterCategory> filterCategories
+     * @return ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\FilterCategory> filterCategories
      */
     public function getFilterCategories()
     {
         if (null === $this->filterCategories) {
-            $this->filterCategories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+            $this->filterCategories = new ObjectStorage();
         }
         return $this->filterCategories;
     }
@@ -1126,10 +1128,10 @@ class Event extends AbstractImportedEntity
     /**
      * Sets the filterCategories
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\FilterCategory> $filterCategories
+     * @param ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\FilterCategory> $filterCategories
      * @return void
      */
-    public function setFilterCategories(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $filterCategories)
+    public function setFilterCategories(ObjectStorage $filterCategories)
     {
         $this->filterCategories = $filterCategories;
     }
@@ -1181,7 +1183,7 @@ class Event extends AbstractImportedEntity
      *
      * @return int
      */
-    public function getEndTstamp()
+    public function getEndTstamp(): int
     {
         if (!$this->endTstamp) {
             $tstamp = 0;
@@ -1202,7 +1204,7 @@ class Event extends AbstractImportedEntity
     /**
      * @return int
      */
-    public function getOrderType()
+    public function getOrderType(): int
     {
         return $this->orderType;
     }
@@ -1210,7 +1212,7 @@ class Event extends AbstractImportedEntity
     /**
      * @param int $orderType
      */
-    public function setOrderType($orderType)
+    public function setOrderType($orderType): void
     {
         $this->orderType = $orderType;
     }
@@ -1392,7 +1394,7 @@ class Event extends AbstractImportedEntity
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return ObjectStorage
      */
     public function getAlternativeEvents()
     {
@@ -1400,7 +1402,7 @@ class Event extends AbstractImportedEntity
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $alternativeEvents
+     * @param ObjectStorage $alternativeEvents
      */
     public function setAlternativeEvents($alternativeEvents)
     {
@@ -1430,7 +1432,7 @@ class Event extends AbstractImportedEntity
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return ObjectStorage
      */
     public function getEventAttachments()
     {
@@ -1438,7 +1440,7 @@ class Event extends AbstractImportedEntity
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $eventAttachments
+     * @param ObjectStorage $eventAttachments
      */
     public function setEventAttachments($eventAttachments)
     {
@@ -1468,7 +1470,7 @@ class Event extends AbstractImportedEntity
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return ObjectStorage
      */
     public function getEventImages()
     {
@@ -1476,7 +1478,7 @@ class Event extends AbstractImportedEntity
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $eventImages
+     * @param ObjectStorage $eventImages
      */
     public function setEventImages($eventImages)
     {
@@ -1506,7 +1508,7 @@ class Event extends AbstractImportedEntity
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return ObjectStorage
      */
     public function getReferents()
     {
@@ -1514,7 +1516,7 @@ class Event extends AbstractImportedEntity
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $referents
+     * @param ObjectStorage $referents
      */
     public function setReferents($referents)
     {
@@ -1544,7 +1546,7 @@ class Event extends AbstractImportedEntity
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return ObjectStorage
      */
     public function getSponsors()
     {
@@ -1552,7 +1554,7 @@ class Event extends AbstractImportedEntity
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $sponsors
+     * @param ObjectStorage $sponsors
      */
     public function setSponsors($sponsors)
     {
@@ -1582,17 +1584,20 @@ class Event extends AbstractImportedEntity
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\ContactPerson>
      */
-    public function getContactPersons()
+    public function getContactPersons(): ObjectStorage
     {
+        if (null === $this->contactPersons) {
+            $this->contactPersons = new ObjectStorage();
+        }
         return $this->contactPersons;
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $contactPersons
+     * @param ObjectStorage $contactPersons
      */
-    public function setContactPersons($contactPersons)
+    public function setContactPersons($contactPersons): void
     {
         $this->contactPersons = $contactPersons;
     }
@@ -1603,7 +1608,7 @@ class Event extends AbstractImportedEntity
      * @param \BrainAppeal\CampusEventsConnector\Domain\Model\ContactPerson $contactPerson
      * @return void
      */
-    public function addContactPerson(\BrainAppeal\CampusEventsConnector\Domain\Model\ContactPerson $contactPerson)
+    public function addContactPerson(\BrainAppeal\CampusEventsConnector\Domain\Model\ContactPerson $contactPerson): void
     {
         $this->getContactPersons()->attach($contactPerson);
     }
@@ -1614,21 +1619,24 @@ class Event extends AbstractImportedEntity
      * @param \BrainAppeal\CampusEventsConnector\Domain\Model\ContactPerson $contactPersonToRemove The ContactPerson to be removed
      * @return void
      */
-    public function removeContactPerson(\BrainAppeal\CampusEventsConnector\Domain\Model\ContactPerson $contactPersonToRemove)
+    public function removeContactPerson(\BrainAppeal\CampusEventsConnector\Domain\Model\ContactPerson $contactPersonToRemove): void
     {
         $this->getContactPersons()->detach($contactPersonToRemove);
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\EventSession>
      */
-    public function getEventSessions()
+    public function getEventSessions(): ObjectStorage
     {
+        if (null === $this->eventSessions) {
+            $this->eventSessions = new ObjectStorage();
+        }
         return $this->eventSessions;
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $eventSessions
+     * @param ObjectStorage $eventSessions
      */
     public function setEventSessions($eventSessions)
     {
@@ -1641,7 +1649,7 @@ class Event extends AbstractImportedEntity
      * @param \BrainAppeal\CampusEventsConnector\Domain\Model\EventSession $eventSession
      * @return void
      */
-    public function addEventSession(\BrainAppeal\CampusEventsConnector\Domain\Model\EventSession $eventSession)
+    public function addEventSession(\BrainAppeal\CampusEventsConnector\Domain\Model\EventSession $eventSession): void
     {
         $this->getEventSessions()->attach($eventSession);
     }
@@ -1652,23 +1660,26 @@ class Event extends AbstractImportedEntity
      * @param \BrainAppeal\CampusEventsConnector\Domain\Model\EventSession $eventSessionToRemove The EventSession to be removed
      * @return void
      */
-    public function removeEventSession(\BrainAppeal\CampusEventsConnector\Domain\Model\EventSession $eventSessionToRemove)
+    public function removeEventSession(\BrainAppeal\CampusEventsConnector\Domain\Model\EventSession $eventSessionToRemove): void
     {
         $this->getEventSessions()->detach($eventSessionToRemove);
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\EventTicketPriceVariant>
      */
-    public function getEventTicketPriceVariants()
+    public function getEventTicketPriceVariants(): ObjectStorage
     {
+        if (null === $this->eventTicketPriceVariants) {
+            $this->eventTicketPriceVariants = new ObjectStorage();
+        }
         return $this->eventTicketPriceVariants;
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $eventTicketPriceVariants
+     * @param ObjectStorage $eventTicketPriceVariants
      */
-    public function setEventTicketPriceVariants($eventTicketPriceVariants)
+    public function setEventTicketPriceVariants($eventTicketPriceVariants): void
     {
         $this->eventTicketPriceVariants = $eventTicketPriceVariants;
     }
@@ -1679,7 +1690,7 @@ class Event extends AbstractImportedEntity
      * @param \BrainAppeal\CampusEventsConnector\Domain\Model\EventTicketPriceVariant $eventTicketPriceVariant
      * @return void
      */
-    public function addEventTicketPriceVariant(\BrainAppeal\CampusEventsConnector\Domain\Model\EventTicketPriceVariant $eventTicketPriceVariant)
+    public function addEventTicketPriceVariant(\BrainAppeal\CampusEventsConnector\Domain\Model\EventTicketPriceVariant $eventTicketPriceVariant): void
     {
         $this->getEventTicketPriceVariants()->attach($eventTicketPriceVariant);
     }
@@ -1690,23 +1701,26 @@ class Event extends AbstractImportedEntity
      * @param \BrainAppeal\CampusEventsConnector\Domain\Model\EventTicketPriceVariant $eventTicketPriceVariantToRemove The EventTicketPriceVariant to be removed
      * @return void
      */
-    public function removeEventTicketPriceVariant(\BrainAppeal\CampusEventsConnector\Domain\Model\EventTicketPriceVariant $eventTicketPriceVariantToRemove)
+    public function removeEventTicketPriceVariant(\BrainAppeal\CampusEventsConnector\Domain\Model\EventTicketPriceVariant $eventTicketPriceVariantToRemove): void
     {
         $this->getEventTicketPriceVariants()->detach($eventTicketPriceVariantToRemove);
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\Location>
      */
-    public function getLocations()
+    public function getLocations(): ObjectStorage
     {
+        if (null === $this->locations) {
+            $this->locations = new ObjectStorage();
+        }
         return $this->locations;
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $locations
+     * @param ObjectStorage $locations
      */
-    public function setLocations($locations)
+    public function setLocations(ObjectStorage $locations): void
     {
         $this->locations = $locations;
     }
@@ -1717,7 +1731,7 @@ class Event extends AbstractImportedEntity
      * @param \BrainAppeal\CampusEventsConnector\Domain\Model\Location $location
      * @return void
      */
-    public function addLocation(\BrainAppeal\CampusEventsConnector\Domain\Model\Location $location)
+    public function addLocation(\BrainAppeal\CampusEventsConnector\Domain\Model\Location $location): void
     {
         if (null === $this->location) {
             $this->location = $location;
@@ -1731,7 +1745,7 @@ class Event extends AbstractImportedEntity
      * @param \BrainAppeal\CampusEventsConnector\Domain\Model\Location $locationToRemove The Location to be removed
      * @return void
      */
-    public function removeLocation(\BrainAppeal\CampusEventsConnector\Domain\Model\Location $locationToRemove)
+    public function removeLocation(\BrainAppeal\CampusEventsConnector\Domain\Model\Location $locationToRemove): void
     {
         $this->getLocations()->detach($locationToRemove);
     }
@@ -1742,7 +1756,7 @@ class Event extends AbstractImportedEntity
      * @param \BrainAppeal\CampusEventsConnector\Domain\Model\ViewList $viewList
      * @return void
      */
-    public function addViewList(\BrainAppeal\CampusEventsConnector\Domain\Model\ViewList $viewList)
+    public function addViewList(\BrainAppeal\CampusEventsConnector\Domain\Model\ViewList $viewList): void
     {
         $this->getViewLists()->attach($viewList);
     }
@@ -1753,7 +1767,7 @@ class Event extends AbstractImportedEntity
      * @param \BrainAppeal\CampusEventsConnector\Domain\Model\ViewList $viewListToRemove The ViewList to be removed
      * @return void
      */
-    public function removeViewList(\BrainAppeal\CampusEventsConnector\Domain\Model\ViewList $viewListToRemove)
+    public function removeViewList(\BrainAppeal\CampusEventsConnector\Domain\Model\ViewList $viewListToRemove): void
     {
         $this->getViewLists()->detach($viewListToRemove);
     }
@@ -1761,12 +1775,12 @@ class Event extends AbstractImportedEntity
     /**
      * Returns the viewLists
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\ViewList> viewLists
+     * @return ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\ViewList> viewLists
      */
-    public function getViewLists()
+    public function getViewLists(): ObjectStorage
     {
         if (null === $this->viewLists) {
-            $this->viewLists = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+            $this->viewLists = new ObjectStorage();
         }
         return $this->viewLists;
     }
@@ -1774,10 +1788,10 @@ class Event extends AbstractImportedEntity
     /**
      * Sets the viewLists
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\ViewList> $viewLists
+     * @param ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\ViewList> $viewLists
      * @return void
      */
-    public function setViewLists(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $viewLists)
+    public function setViewLists(ObjectStorage $viewLists): void
     {
         $this->viewLists = $viewLists;
     }

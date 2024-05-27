@@ -67,7 +67,7 @@ trait DatePeriodTrait
     /**
      * Returns the startDate
      *
-     * @return \DateTime $startDate
+     * @return ?\DateTime $startDate
      */
     public function getStartDate()
     {
@@ -93,7 +93,7 @@ trait DatePeriodTrait
     /**
      * Returns the endDate
      *
-     * @return \DateTime|null $endDate
+     * @return ?\DateTime $endDate
      */
     public function getEndDate()
     {

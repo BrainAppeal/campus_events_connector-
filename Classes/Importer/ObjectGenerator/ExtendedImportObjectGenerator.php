@@ -85,7 +85,7 @@ abstract class ExtendedImportObjectGenerator implements SingletonInterface
      * @param false $debug
      * @return array|ImportedModelInterface[]
      */
-    public function processQueue(array $dataMap, $importSource, $pid, ExtendedFileImporter $fileImporter, $debug = false)
+    public function processQueue(array $dataMap, string $importSource, $pid, ExtendedFileImporter $fileImporter, $debug = false)
     {
         $this->fileImporter = $fileImporter;
         $this->dataMap = $dataMap;
@@ -138,7 +138,7 @@ abstract class ExtendedImportObjectGenerator implements SingletonInterface
      * @param string $importType
      * @return ImportMappingModel
      */
-    protected function getImportMappingModel($importId, $importType): ImportMappingModel
+    protected function getImportMappingModel(int $importId, string $importType): ImportMappingModel
     {
         if (!isset($this->importMappingObjectStorage[$importType][$importId])) {
             $mappingModel = new ImportMappingModel($importId, $importType, null);
@@ -151,7 +151,7 @@ abstract class ExtendedImportObjectGenerator implements SingletonInterface
             $class = $dataTypeMap['class'];
             $domainModel = $this->getDBAL()->findByImport($class, $this->baseUri, $importId, $this->pid);
             if (null === $domainModel) {
-                /** @var ImportedModelInterface $object */
+                /** @var ImportedModelInterface $domainModel */
                 $domainModel = new $class;
                 $domainModel->setCeImportId($importId);
                 $domainModel->setCeImportSource($this->baseUri);
@@ -165,7 +165,7 @@ abstract class ExtendedImportObjectGenerator implements SingletonInterface
     /**
      * Returns the import mapping model for the given model reference data
      *
-     * @param array $referenceData Model data referenced by another model
+     * @param array<string, mixed> $referenceData Model data referenced by another model
      * @return ImportMappingModel
      */
     protected function getImportMappingModelByReference($referenceData): ImportMappingModel

@@ -67,6 +67,7 @@ class EventImportAdditionalLegacyFieldProvider extends AbstractAdditionalFieldPr
      */
     protected function getApiVersionAdditionalField(array &$taskInfo, $task)
     {
+        /** @var EventImportTask $task */
         $fieldId = 'campusEventsConnector_eventImport_apiVersion';
         $taskInfo[$fieldId] = isset($task->apiVersion) && $task->apiVersion == 1 ? 'checked="checked"' : '';
         $fieldName = 'tx_scheduler[' . $fieldId . ']';
@@ -120,7 +121,7 @@ class EventImportAdditionalLegacyFieldProvider extends AbstractAdditionalFieldPr
     {
         $fieldId = 'campusEventsConnector_eventImport_pid';
         if (empty($taskInfo[$fieldId])) {
-            $taskInfo[$fieldId] = empty($task->pid) ? 0 : intval($task->pid);
+            $taskInfo[$fieldId] = empty($task->pid) ? 0 : (int)$task->pid;
         }
         $fieldName = 'tx_scheduler[' . $fieldId . ']';
         $fieldHtml = '<input class="form-control" type="text" ' . 'name="' . $fieldName . '" ' . 'id="' . $fieldId . '" ' . 'value="' . $taskInfo[$fieldId] . '" ' . '>';
@@ -139,6 +140,7 @@ class EventImportAdditionalLegacyFieldProvider extends AbstractAdditionalFieldPr
      */
     protected function getStorageIdAdditionalField($task)
     {
+        /** @var EventImportTask $task */
         $fieldId = 'campusEventsConnector_eventImport_storageId';
         $fieldName = 'tx_scheduler[' . $fieldId . ']';
 
@@ -201,7 +203,7 @@ class EventImportAdditionalLegacyFieldProvider extends AbstractAdditionalFieldPr
         $validData &= $this->validatePidAdditionalField($submittedData, $schedulerModule);
         $validData &= $this->validateStorageIdAdditionalField($submittedData, $schedulerModule);
         $validData &= $this->validateStorageFolderAdditionalField($submittedData, $schedulerModule);
-        return $validData;
+        return (bool) $validData;
     }
 
     /**
@@ -313,6 +315,7 @@ class EventImportAdditionalLegacyFieldProvider extends AbstractAdditionalFieldPr
      */
     public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task)
     {
+        /** @var EventImportTask $task */
         $task->apiKey = $submittedData['campusEventsConnector_eventImport_apiKey'];
         $task->apiVersion = $submittedData['campusEventsConnector_eventImport_apiVersion'];
         $task->baseUri = $submittedData['campusEventsConnector_eventImport_baseUri'];

@@ -11,6 +11,8 @@
  * @link      https://www.campus-events.com/
  */
 
+$versionInformation = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Information\Typo3Version::class);
+$isLegacyVersion = $versionInformation->getMajorVersion() < 12;
 $importColumns = \BrainAppeal\CampusEventsConnector\Utility\TCAUtility::getImportFieldConfiguration();
 return [
     'ctrl' => [
@@ -39,7 +41,8 @@ return [
         event, event_session,
         --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
         --palette--;;paletteLanguage,
-        --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access'
+        --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,
+            --palette--;;access'
         ],
     ],
     'palettes' => [
@@ -48,8 +51,11 @@ return [
             end_tstamp, end_date_is_set'],
         'paletteLanguage' => [
             'showitem' => '
-                sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel,l10n_parent, l10n_diffsource,
+                sys_language_uid,l10n_parent, l10n_diffsource,
             ',
+        ],
+        'access' => [
+            'showitem' => 'hidden, starttime, endtime',
         ],
     ],
     'columns' => [
@@ -64,14 +70,12 @@ return [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'items' => [
-                    ['', 0],
-                ],
-                'foreign_table' => 'tx_campuseventsconnector_domain_model_timerange',
-                'foreign_table_where' => 'AND tx_campuseventsconnector_domain_model_timerange.pid=###CURRENT_PID### AND tx_campuseventsconnector_domain_model_timerange.sys_language_uid IN (-1,0)',
-                'default' => 0
+                'type' => 'group',
+                'allowed' => 'tx_campuseventsconnector_domain_model_timerange',
+                'size' => 1,
+                'maxitems' => 1,
+                'minitems' => 0,
+                'default' => 0,
             ],
         ],
         'l10n_diffsource' => [
@@ -84,11 +88,7 @@ return [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
-                'items' => [
-                    '1' => [
-                        '0' => 'LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.enabled'
-                    ]
-                ],
+                'renderType' => 'checkboxToggle',
             ],
         ],
         'starttime' => [
@@ -133,11 +133,7 @@ return [
             'label' => 'LLL:EXT:campus_events_connector/Resources/Private/Language/locallang_db.xlf:tx_campuseventsconnector_domain_model_timerange.start_date_is_set',
             'config' => [
                 'type' => 'check',
-                'items' => [
-                    '1' => [
-                        '0' => 'LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.enabled'
-                    ]
-                ],
+                'renderType' => 'checkboxToggle',
             ],
         ],
         'end_tstamp' => [
@@ -156,11 +152,7 @@ return [
             'label' => 'LLL:EXT:campus_events_connector/Resources/Private/Language/locallang_db.xlf:tx_campuseventsconnector_domain_model_timerange.end_date_is_set',
             'config' => [
                 'type' => 'check',
-                'items' => [
-                    '1' => [
-                        '0' => 'LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.enabled'
-                    ]
-                ],
+                'renderType' => 'checkboxToggle',
             ],
         ],
 

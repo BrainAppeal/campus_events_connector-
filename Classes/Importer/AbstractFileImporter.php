@@ -16,8 +16,13 @@ namespace BrainAppeal\CampusEventsConnector\Importer;
 use BrainAppeal\CampusEventsConnector\Domain\Model\ImportedModelInterface;
 use BrainAppeal\CampusEventsConnector\Importer\DBAL\DBALInterface;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFolderException;
+use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException;
 use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderReadPermissionsException;
+use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderWritePermissionsException;
 use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Resource\InaccessibleFolder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
@@ -83,7 +88,7 @@ abstract class AbstractFileImporter
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Resource\ResourceStorage
+     * @return null|\TYPO3\CMS\Core\Resource\ResourceStorage
      */
     private function getStorage()
     {
@@ -117,12 +122,14 @@ abstract class AbstractFileImporter
     }
 
     /**
-     * @return \TYPO3\CMS\Core\Resource\Folder|\TYPO3\CMS\Core\Resource\InaccessibleFolder
+     * @return null|Folder|InaccessibleFolder
+     * @throws ExistingTargetFolderException
+     * @throws InsufficientFolderAccessPermissionsException
+     * @throws InsufficientFolderWritePermissionsException
      */
     private function getFalFolder()
     {
-        if (null === $this->falFolder) {
-            $storage = $this->getStorage();
+        if (null === $this->falFolder && null !== $storage = $this->getStorage()) {
             $storageFolder = $this->storageFolder;
             if ($storage->hasFolder($storageFolder)) {
                 $falFolder = $storage->getFolder($storageFolder);
@@ -144,25 +151,25 @@ abstract class AbstractFileImporter
      * @param string $objectProperty
      * @throws \TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileNameException
      */
-    private function createAndAttachFile($sourcePath, $targetFileName, $importId, $object, $objectProperty)
+    private function createAndAttachFile(string $sourcePath, string $targetFileName, $importId, $object, $objectProperty)
     {
-        $falFolder = $this->getFalFolder();
+        if ((null !== $falFolder = $this->getFalFolder()) && null !== $storage = $this->getStorage()) {
+            // add file to FAL
+            /** @var \TYPO3\CMS\Core\Resource\File $newFile */
+            $newFile = $storage->addFile(
+                $sourcePath,
+                $falFolder,
+                $targetFileName,
+                \TYPO3\CMS\Core\Resource\DuplicationBehavior::REPLACE, // rename possible duplicates
+                $deleteAfterAddingToFAL = true // remove $tempFilenameAndPath
+            );
 
-        // add file to FAL
-        /** @var \TYPO3\CMS\Core\Resource\File $newFile */
-        $newFile = $this->getStorage()->addFile(
-            $sourcePath,
-            $falFolder,
-            $targetFileName,
-            \TYPO3\CMS\Core\Resource\DuplicationBehavior::REPLACE, // rename possible duplicates
-            $deleteAfterAddingToFAL = true // remove $tempFilenameAndPath
-        );
-
-        $this->addFileReference($object, $newFile, $importId, $objectProperty);
-        // Fallback for deleting temporary files
-        $localFilePath = PathUtility::getCanonicalPath($sourcePath);
-        if (file_exists($localFilePath)) {
-            unlink($localFilePath);
+            $this->addFileReference($object, $newFile, $importId, $objectProperty);
+            // Fallback for deleting temporary files
+            $localFilePath = PathUtility::getCanonicalPath($sourcePath);
+            if (file_exists($localFilePath)) {
+                unlink($localFilePath);
+            }
         }
     }
 
@@ -188,14 +195,13 @@ abstract class AbstractFileImporter
 
     /**
      * Delete all previously imported files, that are not used anymore
-     * @return array List of deleted file names with deleted state information
+     * @return array<string, int> List of deleted file names with deleted state information
      * @throws \Exception
      */
     private function cleanupFiles(): array
     {
         $fileDeleteStates = [];
-        if (!empty($this->newReferenceQueue)) {
-            $falFolder = $this->getFalFolder();
+        if (!empty($this->newReferenceQueue) && null !== $falFolder = $this->getFalFolder()) {
             try {
                 $existingFiles = $falFolder->getFiles();
             } catch (InsufficientFolderReadPermissionsException $e) {
@@ -279,7 +285,7 @@ abstract class AbstractFileImporter
      * @param string $fileBaseName
      * @return string
      */
-    protected function getImportFileName($importId, $fileBaseName)
+    protected function getImportFileName(int $importId, string $fileBaseName): string
     {
         $filename = str_pad($importId, 4, "0", STR_PAD_LEFT) . '-' . $fileBaseName;
         $falFolder = $this->getFalFolder();
@@ -291,7 +297,7 @@ abstract class AbstractFileImporter
      * @return void
      * @throws \TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileNameException
      */
-    public function runQueue()
+    public function runQueue(): void
     {
         if (!empty($this->newReferenceQueue)) {
             $this->cleanupFiles();
@@ -299,17 +305,23 @@ abstract class AbstractFileImporter
                 /** @var ImportedModelInterface $object */
                 $object = $queueEntry['object'];
                 $importId = (int)$queueEntry['import_id'];
+                $property = (string) $queueEntry['property'];
 
                 if (!empty($queueEntry['file_exists'])) {
-                    $existingReference = $this->getFileReferenceIfExists($object, $queueEntry['property'], $queueEntry['data']);
+                    if (is_array($queueEntry['data']) && !empty($queueEntry['data']['name'])) {
+                        $targetFileName = $queueEntry['data']['name'];
+                    } else {
+                        $targetFileName = $queueEntry['target_file_name'];
+                    }
+                    $existingReference = $this->getFileReferenceIfExists($object, $property, $targetFileName);
                     if (null === $existingReference && (($file = $queueEntry['file']) instanceof File)) {
-                        $this->addFileReference($object, $file, $importId, $queueEntry['property']);
+                        $this->addFileReference($object, $file, $importId, $property);
                     }
                 } else {
                     $downloadFile = $this->getDownloadFromQueueEntry($queueEntry);
                     if (!empty($downloadFile)) {
                         $filename = $queueEntry['target_file_name'];
-                        $this->createAndAttachFile($downloadFile, $filename, $importId, $object, $queueEntry['property']);
+                        $this->createAndAttachFile($downloadFile, $filename, $importId, $object, $property);
                     }
                 }
             }
@@ -327,10 +339,10 @@ abstract class AbstractFileImporter
     }
 
     /**
-     * Returns the list of file reference uid's to be excluded from deletion
-     * @return array|int[]
+     * Returns the list of file reference IDs to be excluded from deletion
+     * @return array<int<0,max>, int>|int[]
      */
-    public function getExcludeFileReferenceUids()
+    public function getExcludeFileReferenceUids(): array
     {
         return array_values($this->updateReferenceIds);
     }
@@ -342,10 +354,9 @@ abstract class AbstractFileImporter
      * @param string $targetFileName
      * @return FileReference|null
      */
-    protected function getFileReferenceIfExists($object, $property, $targetFileName)
+    protected function getFileReferenceIfExists(ImportedModelInterface $object, string $property, string $targetFileName): ?FileReference
     {
         if ((int) $object->getUid() > 0) {
-            /** @var FileReference $fileReference */
             if ($object->_hasProperty($property)) {
                 $sanitizedPropertyName = $property;
             } else {
@@ -373,8 +384,8 @@ abstract class AbstractFileImporter
 
 
     /**
-     * @param array $queueEntry
+     * @param array<string, mixed> $queueEntry
      * @return string|null
      */
-    abstract protected function getDownloadFromQueueEntry($queueEntry);
+    abstract protected function getDownloadFromQueueEntry(array $queueEntry): ?string;
 }

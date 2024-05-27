@@ -364,6 +364,7 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      */
     public function saveAdditionalFields(array $submittedData, AbstractTask $task)
     {
+        /** @var EventImportTask $task */
         $task->apiKey = $submittedData['campusEventsConnector_eventImport_apiKey'];
         $task->apiVersion = $submittedData['campusEventsConnector_eventImport_apiVersion'];
         $baseUri = $submittedData['campusEventsConnector_eventImport_baseUri'];

@@ -30,11 +30,6 @@
             "BrainAppeal\\CampusEventsConnector\\": "Classes"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "BrainAppeal\\CampusEventsConnector\\Tests\\": "Tests"
-        }
-    },
     "replace": {
         "typo3-ter/campus_events_connector": "self.version"
     },

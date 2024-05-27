@@ -22,5 +22,5 @@ interface PostImportHookInterface
      * @param int $pid The page id where the events are stored
      * @return bool
      */
-    public function postImport($pid);
+    public function postImport(int $pid): bool;
 }

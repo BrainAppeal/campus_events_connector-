@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## 4.0.2 (2024-05-27)
+
+### Fixed:
+- remove TCA migration messages for TYPO3 12.4
+- strtotime call with null value
+
+### Changed:
+- improve file reference processing for previously downloaded files
+- improve code quality (add type hints, method parameter typing and return types)
+
 ## 4.0.1 (2023-11-15)
 
 ### Fixed:

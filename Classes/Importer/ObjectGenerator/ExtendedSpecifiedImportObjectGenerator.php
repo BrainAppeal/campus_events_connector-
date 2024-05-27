@@ -60,7 +60,7 @@ class ExtendedSpecifiedImportObjectGenerator extends ExtendedImportObjectGenerat
         if (!($object instanceof Event) || empty($data)) {
             return;
         }
-        $object->setName($data['name']);
+        $object->setName($data['name'] ?? '');
         $urls = [];
         if (array_key_exists('@urls', $data)) {
             $urls = $data['@urls'];
@@ -69,55 +69,32 @@ class ExtendedSpecifiedImportObjectGenerator extends ExtendedImportObjectGenerat
             $urls['eventUrl'] = rtrim($this->baseUri, '/') . '/event/' . $importMappingModel->getImportId();
         }
         $object->setUrl($urls['eventUrl'] ?? '');
-        if ($data['subtitle']) {
-            $object->setSubtitle($data['subtitle']);
-        }
-        if ($data['description']) {
-            $object->setDescription($this->cleanupHtmlForRTE((string)$data['description']));
-        }
-        if ($data['shortDescription']) {
-            $object->setShortDescription($data['shortDescription']);
-        }
-        if ($data['disturberMessage']) {
-            $object->setDisturberMessage($data['disturberMessage']);
-        }
-        if ($data['eventAttendanceMode']) {
-            $object->setEventAttendanceMode($data['eventAttendanceMode']);
-        }
-        if ($data['eventNumber']) {
-            $object->setEventNumber($data['eventNumber']);
-        }
-        if ($data['externalOrderEmailAddress']) {
-            $object->setExternalOrderEmailAddress($data['externalOrderEmailAddress']);
-        }
-        if ($data['externalOrderUrl']) {
-            $object->setExternalOrderUrl($data['externalOrderUrl']);
+        $object->setSubtitle($data['subtitle'] ?? '');
+        $object->setDescription($this->cleanupHtmlForRTE((string)($data['description'] ?? '')));
+        $object->setShortDescription($data['shortDescription'] ?? '');
+        $object->setDisturberMessage($data['disturberMessage'] ?? '');
+        $object->setEventAttendanceMode($data['eventAttendanceMode'] ?? '');
+        $object->setEventNumber($data['eventNumber'] ?? '');
+        $object->setExternalOrderEmailAddress($data['externalOrderEmailAddress'] ?? '');
+        $object->setExternalOrderUrl($data['externalOrderUrl'] ?? '');
+        if (array_key_exists('externalOrderUrl', $data)) {
+
         }
         $object->setDirectRegistrationUrl($urls['directRegistrationUrl'] ?? '');
-        if ($tstamp = $this->strToTime($data['modifiedAtRecursive'])) {
+        if ($tstamp = $this->strToTime($data['modifiedAtRecursive'] ?? null)) {
             $object->setModifiedAtRecursive($tstamp);
         }
-        if ($tstamp = $this->strToTime($data['startDate'])) {
+        if ($tstamp = $this->strToTime($data['startDate'] ?? null)) {
             $object->setStartTstamp($tstamp);
         }
-        if ($tstamp = $this->strToTime($data['endDate'])) {
+        if ($tstamp = $this->strToTime($data['endDate'] ?? null)) {
             $object->setEndTstamp($tstamp);
         }
-        if ($data['orderType']) {
-            $object->setOrderType($data['orderType']);
-        }
-        if ($data['referentsTitle']) {
-            $object->setReferentsTitle($data['referentsTitle']);
-        }
-        if ($data['seoTitle']) {
-            $object->setSeoTitle($data['seoTitle']);
-        }
-        if ($data['seoDescription']) {
-            $object->setSeoDescription($data['seoDescription']);
-        }
-        if ($data['sponsorsTitle']) {
-            $object->setSponsorsTitle($data['sponsorsTitle']);
-        }
+        $object->setOrderType((int) ($data['orderType'] ?? 0));
+        $object->setReferentsTitle($data['referentsTitle'] ?? '');
+        $object->setSeoTitle($data['seoTitle'] ?? '');
+        $object->setSeoDescription($data['seoDescription'] ?? '');
+        $object->setSponsorsTitle($data['sponsorsTitle'] ?? '');
         $object->setCanceled(!empty($data['canceled']));
 
         if (!empty($data['organizers'])){
@@ -434,7 +411,7 @@ class ExtendedSpecifiedImportObjectGenerator extends ExtendedImportObjectGenerat
         }
         $object->setName($this->cropFieldValue($data, 'name', 255));
         $object->setFileHash($data['fileHash'] ?? '');
-        if ($data['attachmentFile']['url']) {
+        if ($data['attachmentFile']['url'] ?? null) {
             $this->fileImporter->enqueueFileMapping($object, 'attachment_file', $data['attachmentFile']);
         }
     }
@@ -448,7 +425,7 @@ class ExtendedSpecifiedImportObjectGenerator extends ExtendedImportObjectGenerat
         }
         $object->setName($this->cropFieldValue($data, 'name', 255));
         $object->setFileHash($data['fileHash'] ?? '');
-        if ($data['imageFile']['url']) {
+        if ($data['imageFile']['url'] ?? null) {
             $this->fileImporter->enqueueFileMapping($object, 'image_file', $data['imageFile']);
         }
     }
@@ -460,10 +437,10 @@ class ExtendedSpecifiedImportObjectGenerator extends ExtendedImportObjectGenerat
         if (!($object instanceof EventSession) || empty($data)) {
             return;
         }
-        if ($tstamp = $this->strToTime($data['endDate'])) {
+        if ($tstamp = $this->strToTime(isset($data['endDate']) ? $data['endDate'] : null)) {
             $object->setEndTstamp($tstamp);
         }
-        if ($tstamp = $this->strToTime($data['startDate'])) {
+        if ($tstamp = $this->strToTime(isset($data['startDate']) ? $data['startDate'] : null)) {
             $object->setStartTstamp($tstamp);
         }
         if (!empty($data['sessionDates'])){
@@ -484,10 +461,10 @@ class ExtendedSpecifiedImportObjectGenerator extends ExtendedImportObjectGenerat
         if (!($object instanceof EventTicketPriceVariant) || empty($data)) {
             return;
         }
-        if ($this->strToTime($data['bookableFrom']) !== false) {
+        if ($this->strToTime($data['bookableFrom'] ?? null) !== false) {
             $object->setBookableFrom(date_create($data['bookableFrom']));
         }
-        if ($this->strToTime($data['bookableTill']) !== false) {
+        if ($this->strToTime($data['bookableTill'] ?? null) !== false) {
             $object->setBookableTill(date_create($data['bookableTill']));
         }
         $urls = [];
@@ -522,14 +499,14 @@ class ExtendedSpecifiedImportObjectGenerator extends ExtendedImportObjectGenerat
         if (!($object instanceof TimeRange) || empty($data)) {
             return;
         }
-        if ($tstamp = $this->strToTime($data['endDate'])) {
+        if ($tstamp = $this->strToTime(isset($data['endDate']) ? $data['endDate'] : null)) {
             $object->setEndTstamp($tstamp);
         }
-        if ($tstamp = $this->strToTime($data['startDate'])) {
+        if ($tstamp = $this->strToTime(isset($data['startDate']) ? $data['startDate'] : null)) {
             $object->setStartTstamp($tstamp);
         }
-        $object->setEndDateIsSet($data['endDateTimeIsSet']);
-        $object->setStartDateIsSet($data['startDateTimeIsSet']);
+        $object->setEndDateIsSet(!empty($data['endDateTimeIsSet']));
+        $object->setStartDateIsSet(!empty($data['startDateTimeIsSet']));
         if (null === $object->getEvent() && (null !== $eventSession = $object->getEventSession())
             && null !== $event = $eventSession->getEvent()){
             $object->setEvent($event);
@@ -545,8 +522,8 @@ class ExtendedSpecifiedImportObjectGenerator extends ExtendedImportObjectGenerat
         }
         $object->setName($this->cropFieldValue($data, 'name', 255));
         $object->setUrl($this->cropFieldValue($data, 'url', 255));
-        $object->setImageHash($data['imageHash']);
-        if ($data['imageFile']['url']) {
+        $object->setImageHash($data['imageHash'] ?? '');
+        if (!empty($data['imageFile']['url'])) {
             $this->fileImporter->enqueueFileMapping($object, 'image_file', $data['imageFile']);
         }
     }

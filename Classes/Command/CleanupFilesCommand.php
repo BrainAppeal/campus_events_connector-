@@ -17,7 +17,7 @@ class CleanupFilesCommand extends Command
      * @param OutputInterface $output
      * @return int
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         Bootstrap::initializeBackendAuthentication();
         AbstractFileImporter::cleanupTemporaryFiles();

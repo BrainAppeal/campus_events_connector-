@@ -43,7 +43,7 @@ class ExtendedFileImporter extends AbstractFileImporter implements \TYPO3\CMS\Co
      * @param string $tempFilenameAndPath
      * @param string $url
      */
-    private function addToQueue($object, $property, $data, $tempFilenameAndPath, $url, $targetFileName)
+    private function addToQueue(ImportedModelInterface $object, string $property, array $data, string $tempFilenameAndPath, string $url, string $targetFileName): void
     {
         $importId = (int) (!empty($data['id']) ? $data['id'] : $object->getUid());
         $this->newReferenceQueue[] = [
@@ -63,9 +63,9 @@ class ExtendedFileImporter extends AbstractFileImporter implements \TYPO3\CMS\Co
     /**
      * @param ImportedModelInterface $object
      * @param string $property
-     * @param array $data
+     * @param array<string, mixed> $data
      */
-    public function enqueueFileMapping($object, $property, $data)
+    public function enqueueFileMapping(ImportedModelInterface $object, string $property, array $data)
     {
         if (empty($data['url']) || empty($this->baseUri)) {
             return;
@@ -87,10 +87,10 @@ class ExtendedFileImporter extends AbstractFileImporter implements \TYPO3\CMS\Co
     }
 
     /**
-     * @param array $queueEntry
+     * @param array<string, mixed> $queueEntry
      * @return string|null
      */
-    protected function getDownloadFromQueueEntry($queueEntry)
+    protected function getDownloadFromQueueEntry(array $queueEntry): ?string
     {
         $downloadUrl = $queueEntry['download']['url'];
         $downloadFile = $queueEntry['download']['file'];

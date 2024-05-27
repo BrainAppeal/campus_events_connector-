@@ -34,7 +34,6 @@ class Importer
     public function __construct(ApiConnector $apiConnector)
     {
         $this->apiConnector = $apiConnector;
-        /** @var ImportObjectGenerator $importObjectGenerator */
         $this->importObjectGenerator = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(SpecifiedImportObjectGenerator::class);
     }
 
@@ -43,7 +42,7 @@ class Importer
      * @param string $apiKey
      * @return ApiConnector
      */
-    private function getApiConnector(string $baseUri, string $apiKey)
+    private function getApiConnector(string $baseUri, string $apiKey): ApiConnector
     {
         $apiConnector = $this->apiConnector;
         $apiConnector->setBaseUri($baseUri);
@@ -55,7 +54,7 @@ class Importer
     /**
      * @return DBALInterface
      */
-    private function getDBAL()
+    private function getDBAL(): DBALInterface
     {
         $dbal = \BrainAppeal\CampusEventsConnector\Importer\DBAL\DBALFactory::getInstance();
 
@@ -67,7 +66,7 @@ class Importer
      * @param string $storageFolder
      * @return FileImporter
      */
-    private function getFileImporter($storageId, $storageFolder)
+    private function getFileImporter(int $storageId, string $storageFolder): FileImporter
     {
         /** @var FileImporter $fileImporter */
         $fileImporter = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(FileImporter::class);
@@ -84,7 +83,7 @@ class Importer
      * @param string $storageFolder
      * @return bool if any data was changed
      */
-    public function import($baseUri, $apiKey, $pid, $storageId, $storageFolder)
+    public function import(string $baseUri, string $apiKey, ?int $pid, int $storageId, string $storageFolder)
     {
         $importStartTimestamp = time();
 

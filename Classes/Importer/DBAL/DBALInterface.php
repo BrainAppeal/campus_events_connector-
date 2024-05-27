@@ -47,7 +47,7 @@ interface DBALInterface
     /**
      * @param \TYPO3\CMS\Core\Resource\File $sysFile
      * @param ImportedModelInterface $target
-     * @param string $field
+     * @param string $property
      * @param array $attribs
      * @return int|null
      */

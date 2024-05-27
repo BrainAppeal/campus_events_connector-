@@ -11,6 +11,8 @@
  * @link      https://www.campus-events.com/
  */
 
+$versionInformation = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Information\Typo3Version::class);
+$isLegacyVersion = $versionInformation->getMajorVersion() < 12;
 $importColumns = \BrainAppeal\CampusEventsConnector\Utility\TCAUtility::getImportFieldConfiguration();
 return [
     'ctrl' => [
@@ -33,7 +35,21 @@ return [
         'iconfile' => 'EXT:campus_events_connector/Resources/Public/Icons/tx_campuseventsconnector_domain_model_filtercategory.gif'
     ],
     'types' => [
-        '1' => ['showitem' => 'sys_language_uid, l10n_parent, l10n_diffsource, name, parent, --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access'],
+        '1' => ['showitem' => 'name, parent,
+        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+            --palette--;;paletteLanguage,
+        --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,
+            --palette--;;access'],
+    ],
+    'palettes' => [
+        'paletteLanguage' => [
+            'showitem' => '
+                sys_language_uid,l10n_parent, l10n_diffsource,
+            ',
+        ],
+        'access' => [
+            'showitem' => 'hidden, starttime, endtime',
+        ],
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -47,14 +63,12 @@ return [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'items' => [
-                    ['', 0],
-                ],
-                'foreign_table' => 'tx_campuseventsconnector_domain_model_filtercategory',
-                'foreign_table_where' => 'AND tx_campuseventsconnector_domain_model_filtercategory.pid=###CURRENT_PID### AND tx_campuseventsconnector_domain_model_filtercategory.sys_language_uid IN (-1,0)',
-                'default' => 0
+                'type' => 'group',
+                'allowed' => 'tx_campuseventsconnector_domain_model_filtercategory',
+                'size' => 1,
+                'maxitems' => 1,
+                'minitems' => 0,
+                'default' => 0,
             ],
         ],
         'l10n_diffsource' => [
@@ -67,11 +81,7 @@ return [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
-                'items' => [
-                    '1' => [
-                        '0' => 'LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.enabled'
-                    ]
-                ],
+                'renderType' => 'checkboxToggle',
             ],
         ],
         'starttime' => [

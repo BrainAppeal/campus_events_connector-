@@ -29,10 +29,11 @@ class UpdateService
 	    'import_id',
 	    'imported_at'
     ];
+
     /**
-     * @return int
+     * @return bool
      */
-    public function checkIfUpdateIsNeeded()
+    public function checkIfUpdateIsNeeded(): bool
     {
         $updateNeeded = false;
         /** @var ConnectionPool $connectionPool */

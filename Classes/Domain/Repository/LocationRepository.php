@@ -14,8 +14,11 @@
 
 namespace BrainAppeal\CampusEventsConnector\Domain\Repository;
 
+use BrainAppeal\CampusEventsConnector\Domain\Model\Location;
+
 /**
  * The repository for Locations
+ * @extends AbstractImportedRepository<Location>
  */
 class LocationRepository extends AbstractImportedRepository
 {

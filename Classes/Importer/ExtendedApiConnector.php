@@ -299,7 +299,7 @@ class ExtendedApiConnector
      * @param string $importType
      * @return int
      */
-    public static function filterId($apiReferenceId, $importType)
+    public static function filterId(string $apiReferenceId, string $importType): int
     {
         if (array_key_exists($importType, self::$apiTypeEntryPoints)) {
             $path = self::BASE_PATH . self::$apiTypeEntryPoints[$importType] . '/';

@@ -72,7 +72,7 @@ class EventSession extends AbstractImportedEntity implements BelongsToEventInter
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange>
      */
     public function getSessionTimePeriods()
     {
@@ -80,9 +80,9 @@ class EventSession extends AbstractImportedEntity implements BelongsToEventInter
     }
 
     /**
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $sessionTimePeriods
+     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange> $sessionTimePeriods
      */
-    public function setSessionTimePeriods($sessionTimePeriods)
+    public function setSessionTimePeriods($sessionTimePeriods): void
     {
         $this->sessionTimePeriods = $sessionTimePeriods;
     }
@@ -90,10 +90,10 @@ class EventSession extends AbstractImportedEntity implements BelongsToEventInter
     /**
      * Adds a SessionTimePeriod
      *
-     * @param \BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange $organizer
+     * @param \BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange $sessionTimePeriod
      * @return void
      */
-    public function addSessionTimePeriod(\BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange $sessionTimePeriod)
+    public function addSessionTimePeriod(\BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange $sessionTimePeriod): void
     {
         if (null !== $event = $this->getEvent()) {
             $sessionTimePeriod->setEvent($event);
@@ -107,7 +107,7 @@ class EventSession extends AbstractImportedEntity implements BelongsToEventInter
      * @param \BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange $sessionTimePeriodToRemove The SessionTimePeriod to be removed
      * @return void
      */
-    public function removeSessionTimePeriod(\BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange $sessionTimePeriodToRemove)
+    public function removeSessionTimePeriod(\BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange $sessionTimePeriodToRemove): void
     {
         $this->getSessionTimePeriods()->detach($sessionTimePeriodToRemove);
     }

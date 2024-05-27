@@ -189,9 +189,9 @@ class ExtendedImporter
         $dataHash = md5(json_encode($listItem));
         $prevQueueItem = $this->getImportScheduleUtility()->fetchPreviousEntry($importId, $importModelType);
         $doImport = true;
-        if (array_key_exists('modifiedAtRecursive', $listItem)) {
+        if (!empty($listItem['modifiedAtRecursive'])) {
             $modified = strtotime($listItem['modifiedAtRecursive']);
-        } elseif (array_key_exists('modifiedAt', $listItem)) {
+        } elseif (!empty($listItem['modifiedAt'])) {
             $modified = strtotime($listItem['modifiedAt']);
         } else {
             $modified = null;

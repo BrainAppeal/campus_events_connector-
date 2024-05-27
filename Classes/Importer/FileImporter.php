@@ -35,7 +35,7 @@ class FileImporter extends AbstractFileImporter implements \TYPO3\CMS\Core\Singl
      * @param int $storageId
      * @param string $storageFolder
      */
-    public function initialize($storageId, $storageFolder)
+    public function initialize(int $storageId, string $storageFolder): void
     {
         $this->storageId = $storageId;
         $this->storageFolder = $storageFolder;
@@ -48,7 +48,7 @@ class FileImporter extends AbstractFileImporter implements \TYPO3\CMS\Core\Singl
      * @param string $tempFilenameAndPath
      * @param \BrainAppeal\CampusEventsConnector\Http\PromiseInterface|PromiseInterface $promise
      */
-    private function addToQueue($object, $property, $data, $tempFilenameAndPath, $promise, $targetFileName)
+    private function addToQueue($object, $property, $data, $tempFilenameAndPath, $promise, $targetFileName): void
     {
         $importId = (int) (!empty($data['id']) ? $data['id'] : $object->getUid());
         $this->newReferenceQueue[] = [
@@ -69,14 +69,14 @@ class FileImporter extends AbstractFileImporter implements \TYPO3\CMS\Core\Singl
      * @param string $property
      * @param array $data
      */
-    public function enqueueFileMapping($object, $property, $data)
+    public function enqueueFileMapping($object, $property, $data): void
     {
         if (empty($data['hash']) || empty($data['url'])) {
             return;
         }
 
         $importId = (int) (!empty($data['id']) ? $data['id'] : $object->getUid());
-        $fileBaseName =  basename($data['url']);
+        $fileBaseName = basename($data['url']);
         $targetFileName = $this->getImportFileName($importId, $fileBaseName);
         $existingReference = $this->getFileReferenceIfExists($object, $property, $targetFileName);
 
@@ -98,10 +98,10 @@ class FileImporter extends AbstractFileImporter implements \TYPO3\CMS\Core\Singl
     }
 
     /**
-     * @param array $queueEntry
+     * @param array<string, mixed> $queueEntry
      * @return string|null
      */
-    protected function getDownloadFromQueueEntry($queueEntry)
+    protected function getDownloadFromQueueEntry(array $queueEntry): ?string
     {
         /**
          * @var \BrainAppeal\CampusEventsConnector\Http\PromiseInterface $downloadPromise
@@ -114,7 +114,7 @@ class FileImporter extends AbstractFileImporter implements \TYPO3\CMS\Core\Singl
         } catch (\BrainAppeal\CampusEventsConnector\Http\HttpException $e) {
             unset($e);
         }
-        if ('fulfilled' == $downloadPromise->getState()) {
+        if ('fulfilled' === $downloadPromise->getState()) {
             return $downloadFile;
         }
 

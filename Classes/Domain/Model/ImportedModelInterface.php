@@ -19,35 +19,35 @@ use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
 interface ImportedModelInterface extends DomainObjectInterface
 {
     /**
-     * @return string
+     * @return ?string
      */
-    public function getCeImportSource();
+    public function getCeImportSource(): ?string;
 
     /**
-     * @param string $importSource
+     * @param ?string $importSource
      * @return ImportedModelInterface
      */
-    public function setCeImportSource($importSource);
+    public function setCeImportSource(?string $importSource): ImportedModelInterface;
 
     /**
-     * @return int
+     * @return ?int
      */
-    public function getCeImportId();
+    public function getCeImportId(): ?int;
 
     /**
-     * @param int $importId
+     * @param ?int $importId
      * @return ImportedModelInterface
      */
-    public function setCeImportId($importId);
+    public function setCeImportId(?int $importId): ImportedModelInterface;
 
     /**
-     * @return int
+     * @return ?int
      */
-    public function getCeImportedAt();
+    public function getCeImportedAt(): ?int;
 
     /**
-     * @param int $importedAt
+     * @param ?int $importedAt
      * @return ImportedModelInterface
      */
-    public function setCeImportedAt($importedAt);
+    public function setCeImportedAt(?int $importedAt): ImportedModelInterface;
 }
