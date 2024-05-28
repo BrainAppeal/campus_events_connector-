@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 4.0.3 (2024-05-28)
+
+### Fixed:
+- fix exception on import with legacy api
+
 ## 4.0.2 (2024-05-27)
 
 ### Fixed:

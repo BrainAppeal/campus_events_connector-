@@ -24,6 +24,7 @@ use BrainAppeal\CampusEventsConnector\Domain\Model\TargetGroup;
 use BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange;
 use BrainAppeal\CampusEventsConnector\Domain\Model\ViewList;
 use BrainAppeal\CampusEventsConnector\Importer\FileImporter;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class SpecifiedImportObjectGenerator extends ImportObjectGenerator
 {
@@ -75,8 +76,14 @@ class SpecifiedImportObjectGenerator extends ImportObjectGenerator
             $object->addSpeaker($speaker);
         }
 
+        $dataOrganizers = [];
+        if (!empty($data['organizers'])){
+            $dataOrganizers = $data['organizers'];
+        } elseif (!empty($data['organizer'])){
+            $dataOrganizers = $data['organizer'];
+        }
         /** @var Organizer[] $organizers */
-        $organizers = $this->generateMultiple(Organizer::class, $data['organizer']);
+        $organizers = $this->generateMultiple(Organizer::class, $dataOrganizers);
         foreach ($organizers as $organizer) {
             $object->addOrganizer($organizer);
         }
@@ -93,10 +100,14 @@ class SpecifiedImportObjectGenerator extends ImportObjectGenerator
             $object->addFilterCategory($filterCategory);
         }
 
-        /** @var ViewList[] $viewLists */
-        $viewLists = $this->generateMultiple(ViewList::class, $data['view_lists']);
-        foreach ($viewLists as $viewList) {
-            $object->addViewList($viewList);
+        if (!empty($data['view_lists'])) {
+            /** @var ViewList[] $viewLists */
+            $viewLists = $this->generateMultiple(ViewList::class, $data['view_lists']);
+            foreach ($viewLists as $viewList) {
+                $object->addViewList($viewList);
+            }
+        } else {
+            $object->setViewLists(new ObjectStorage());
         }
 
         /** @var Category[] $categories */
@@ -105,8 +116,11 @@ class SpecifiedImportObjectGenerator extends ImportObjectGenerator
             $object->addCategory($category);
         }
 
-        /** @var Location $location */
-        $location = $this->generate(Location::class, $data['location']['id'], $data['location']);
+        $location = null;
+        if (!empty($data['location']['id'])) {
+            $location = $this->generate(Location::class, (int) $data['location']['id'], $data['location']);
+            /** @var Location $location */
+        }
         $object->setLocation($location);
 
         /** @var FileImporter $fileImporter */
@@ -129,7 +143,7 @@ class SpecifiedImportObjectGenerator extends ImportObjectGenerator
     {
         /** @var FilterCategory $object */
         $object->setName($data['name']);
-        $object->setParent($this->generate($class, $data['parent_id'], null));
+        $object->setParent($this->generate($class, (int) $data['parent_id'], null));
     }
 
     /**

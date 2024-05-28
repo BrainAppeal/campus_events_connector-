@@ -293,7 +293,7 @@ class Event extends AbstractImportedEntity
     /**
      * location
      * @deprecated
-     * @var \BrainAppeal\CampusEventsConnector\Domain\Model\Location
+     * @var ?\BrainAppeal\CampusEventsConnector\Domain\Model\Location
      */
     protected $location;
 
@@ -885,7 +885,7 @@ class Event extends AbstractImportedEntity
     /**
      * Returns the location
      *
-     * @return \BrainAppeal\CampusEventsConnector\Domain\Model\Location $location
+     * @return ?\BrainAppeal\CampusEventsConnector\Domain\Model\Location $location
      * @deprecated
      */
     public function getLocation()
@@ -896,7 +896,7 @@ class Event extends AbstractImportedEntity
     /**
      * Sets the location
      *
-     * @param \BrainAppeal\CampusEventsConnector\Domain\Model\Location $location
+     * @param ?\BrainAppeal\CampusEventsConnector\Domain\Model\Location $location
      * @return void
      * @deprecated
      */

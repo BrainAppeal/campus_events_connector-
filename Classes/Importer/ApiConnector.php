@@ -40,7 +40,7 @@ class ApiConnector
      */
     private function generateUri($data, $additionalParams)
     {
-        $uri = sprintf('/api/%s/%s?ApiKey=%s',  urlencode($this->apiVersion), urlencode($data), urlencode($this->apiKey));
+        $uri = sprintf('/api/%s/%s?ApiKey=%s',  urlencode((string) $this->apiVersion), urlencode((string) $data), urlencode((string) $this->apiKey));
 
         foreach ($additionalParams as $key => $value) {
             $uri .= sprintf('&%s=%s', urlencode($key), urlencode($value));

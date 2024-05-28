@@ -93,9 +93,9 @@ abstract class ImportObjectGenerator implements SingletonInterface
         if(!empty($dataArray)) {
             foreach ($dataArray as $data) {
                 if (is_array($data)) {
-                    $object = $this->generate($class, $data['id'], $data);
+                    $object = $this->generate($class, (int) $data['id'], $data);
                 } else {
-                    $object = $this->generate($class, $data, null);
+                    $object = $this->generate($class, (int) $data, null);
                 }
                 if (null !== $object) {
                     $objects[] = $object;
@@ -112,7 +112,7 @@ abstract class ImportObjectGenerator implements SingletonInterface
      * @param ?array<string, mixed> $data
      * @return ?ImportedModelInterface
      */
-    public function generate(string $class, int $importId, ?array $data = null)
+    public function generate(string $class, int $importId, ?array $data = null): ?ImportedModelInterface
     {
         if (empty($importId)) {
             return null;

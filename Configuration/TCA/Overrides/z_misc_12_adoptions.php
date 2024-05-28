@@ -4,7 +4,6 @@ defined('TYPO3') or die;
 
 call_user_func(static function () {
     $ll = 'LLL:EXT:news/Resources/Private/Language/locallang_db.xlf:';
-    $configuration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\GeorgRinger\News\Domain\Model\Dto\EmConfiguration::class);
     $versionInformation = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Information\Typo3Version::class);
     if ($versionInformation->getMajorVersion() > 11) {
         $extTableNames = array_filter(array_keys($GLOBALS['TCA']), static function ($var) {

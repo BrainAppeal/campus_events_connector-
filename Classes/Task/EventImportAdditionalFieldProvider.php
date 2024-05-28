@@ -278,13 +278,12 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
             $apiConnector = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
                 \BrainAppeal\CampusEventsConnector\Importer\ApiConnector::class
             );
-            $apiConnector->setBaseUri($baseUri);
         } else {
             /** @var ExtendedApiConnector $apiConnector */
             $apiConnector = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ExtendedApiConnector::class);
-            $apiConnector->setBaseUri($baseUri);
-            $apiConnector->setApiKey($apiKey);
         }
+        $apiConnector->setBaseUri($baseUri);
+        $apiConnector->setApiKey($apiKey);
         return $apiConnector;
     }
 

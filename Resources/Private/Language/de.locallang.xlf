@@ -199,7 +199,7 @@
 				<target>Basis URL des Quellsystems</target>
 			</trans-unit>
 			<trans-unit id="tx_campuseventsconnector_task_eventimporttask.api_key">
-				<target>API Key für das Quellsystems</target>
+				<target>API Key für das Quellsystem</target>
 			</trans-unit>
 			<trans-unit id="tx_campuseventsconnector_task_eventimporttask.api_version">
 				<target>API Version</target>
