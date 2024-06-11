@@ -62,6 +62,7 @@ class FileImporter extends AbstractFileImporter implements \TYPO3\CMS\Core\Singl
             'import_id' => $importId,
             'target_file_name' => $targetFileName,
         ];
+        $this->mappingOfUsedFileNamesToReferenceUid[$targetFileName] = null;
     }
 
     /**
@@ -80,9 +81,10 @@ class FileImporter extends AbstractFileImporter implements \TYPO3\CMS\Core\Singl
         $targetFileName = $this->getImportFileName($importId, $fileBaseName);
         $existingReference = $this->getFileReferenceIfExists($object, $property, $targetFileName);
 
-        if (null !== $existingReference) {
+        if (null !== $existingReference && $this->originalResourceIsValid($existingReference)) {
             $fileReferenceUid = $existingReference->getOriginalResource()->getUid();
             $this->updateReferenceIds[$fileReferenceUid] = $fileReferenceUid;
+            $this->mappingOfUsedFileNamesToReferenceUid[$targetFileName] = $fileReferenceUid;
         } else {
             $tempFilenameAndPath = $this->getTempFilePath();
 

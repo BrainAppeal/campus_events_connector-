@@ -20,12 +20,14 @@ use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFolderException;
 use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderAccessPermissionsException;
 use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderReadPermissionsException;
 use TYPO3\CMS\Core\Resource\Exception\InsufficientFolderWritePermissionsException;
+use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\InaccessibleFolder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference as FileReferenceModel;
 
 abstract class AbstractFileImporter
 {
@@ -37,6 +39,10 @@ abstract class AbstractFileImporter
      * @var array
      */
     protected $newReferenceQueue;
+    /**
+     * @var array
+     */
+    protected $mappingOfUsedFileNamesToReferenceUid;
 
     /**
      * @var int[]
@@ -72,6 +78,7 @@ abstract class AbstractFileImporter
     {
         $this->newReferenceQueue = [];
         $this->updateReferenceIds = [];
+        $this->mappingOfUsedFileNamesToReferenceUid = [];
 
         $this->storageId = 0;
         $this->storageFolder = 'tx_campuseventsconnector/';
@@ -207,24 +214,26 @@ abstract class AbstractFileImporter
             } catch (InsufficientFolderReadPermissionsException $e) {
                 $existingFiles = [];
             }
-            $activeFileNames = [];
+            $allUsedFileNames = array_keys($this->mappingOfUsedFileNamesToReferenceUid);
+            $newlyAddedFileNames = [];
             foreach ($this->newReferenceQueue as $offset => $queueEntry) {
-                $activeFileNames[$queueEntry['target_file_name']] = $offset;
+                $newlyAddedFileNames[$queueEntry['target_file_name']] = $offset;
+                $allUsedFileNames[] = $queueEntry['target_file_name'];
             }
             foreach ($existingFiles as $file) {
                 $fileDeleteStates[$file->getName()] = -1;
             }
             foreach ($existingFiles as $file) {
                 // Delete all files, that are not used anymore
-                if (!isset($activeFileNames[$file->getName()])) {
+                if (!in_array($file->getName(), $allUsedFileNames, false)) {
                     try {
                         $file->delete();
                         $fileDeleteStates[$file->getName()] = 1;
                     } catch (InsufficientFolderReadPermissionsException $e) {
                         $fileDeleteStates[$file->getName()] = -1;
                     }
-                } else {
-                    $queueOffset = $activeFileNames[$file->getName()];
+                } elseif (isset($newlyAddedFileNames[$file->getName()])) {
+                    $queueOffset = $newlyAddedFileNames[$file->getName()];
                     $queueEntry =& $this->newReferenceQueue[$queueOffset];
                     $queueEntry['file'] = $file;
                     $queueEntry['_file_size'] = (int)$file->getSize();
@@ -380,6 +389,23 @@ abstract class AbstractFileImporter
         }
 
         return null;
+    }
+
+
+    /**
+     * Returns the uid of the original file for the given file reference, if the file exists
+     * @param FileReferenceModel $fileReference
+     * @return bool
+     */
+    protected function originalResourceIsValid(FileReferenceModel $fileReference): bool
+    {
+        try {
+            $originalFile = $fileReference->getOriginalResource()->getOriginalFile();
+        } catch (ResourceDoesNotExistException $e) {
+            return false;
+        }
+        return !$originalFile->isMissing() && (null !== $storage = $originalFile->getStorage())
+            && $storage->hasFile($originalFile->getIdentifier());
     }
 
 

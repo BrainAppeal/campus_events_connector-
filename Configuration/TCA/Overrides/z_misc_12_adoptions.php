@@ -42,31 +42,5 @@ call_user_func(static function () {
             $GLOBALS['TCA'][$tableName]['columns'][$numberField]['config']['type'] = 'number';
             unset($GLOBALS['TCA'][$tableName]['columns'][$numberField]['config']['eval']);
         }
-        /*
-        $GLOBALS['TCA']['tx_campuseventsconnector_domain_model_news']['columns']['archive']['config']['format'] = $configuration->getArchiveDate();
-        $GLOBALS['TCA']['tx_campuseventsconnector_domain_model_news']['columns']['datetime']['config']['required'] = $configuration->getDateTimeRequired();
-
-        // link fields
-        $GLOBALS['TCA']['tx_campuseventsconnector_domain_model_news']['columns']['internalurl']['config'] = [
-            'type' => 'link',
-            'required' => true,
-        ];
-        $GLOBALS['TCA']['tx_campuseventsconnector_domain_model_link']['columns']['uri']['config'] = [
-            'type' => 'link',
-            'placeholder' => $ll . 'tx_campuseventsconnector_domain_model_link.uri.placeholder',
-            'required' => 'true',
-            'softref' => 'typolink',
-            'behaviour' => [
-                'allowLanguageSynchronization' => true,
-            ],
-        ];
-
-        // required fields
-        foreach (['tx_campuseventsconnector_domain_model_link' => ['uri'], 'tx_campuseventsconnector_domain_model_news' => ['title', 'externalurl'], 'tx_campuseventsconnector_domain_model_tag' => ['title']] as $table => $fields) {
-            foreach ($fields as $field) {
-                $GLOBALS['TCA'][$table]['columns'][$field]['config']['required'] = true;
-                $GLOBALS['TCA'][$table]['columns'][$field]['config']['eval'] = str_replace('required', '', $GLOBALS['TCA'][$table]['columns'][$field]['config']['required']);
-            }
-        }*/
     }
 });

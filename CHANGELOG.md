@@ -1,5 +1,10 @@
 # CHANGELOG.md
 
+## 4.0.4 (2024-06-11)
+
+### Changed:
+- improved processing of file references
+
 ## 4.0.3 (2024-05-28)
 
 ### Fixed:
