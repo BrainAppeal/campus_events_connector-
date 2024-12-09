@@ -73,8 +73,11 @@ class ExtendedFileImporter extends AbstractFileImporter implements \TYPO3\CMS\Co
         }
 
         $importId = (int) (!empty($data['id']) ? $data['id'] : $object->getUid());
-        $fileBaseName = basename($data['url']);
+        $fileBaseName = basename((string) $data['url']);
         $targetFileName = $this->getImportFileName($importId, $fileBaseName);
+        if (!$targetFileName) {
+            return;
+        }
         $existingReference = $this->getFileReferenceIfExists($object, $property, $targetFileName);
 
         if (null !== $existingReference && $this->originalResourceIsValid($existingReference)) {
@@ -83,7 +86,7 @@ class ExtendedFileImporter extends AbstractFileImporter implements \TYPO3\CMS\Co
             $this->mappingOfUsedFileNamesToReferenceUid[$targetFileName] = $fileReferenceUid;
         } else {
             $tempFilenameAndPath = $this->getTempFilePath();
-            $downloadUrl = rtrim($this->baseUri, '/') . '/' . ltrim($data['url'], '/');
+            $downloadUrl = rtrim($this->baseUri, '/') . '/' . ltrim((string) $data['url'], '/');
             $this->addToQueue($object, $property, $data, $tempFilenameAndPath, $downloadUrl, $targetFileName);
         }
     }

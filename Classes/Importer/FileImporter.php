@@ -77,8 +77,11 @@ class FileImporter extends AbstractFileImporter implements \TYPO3\CMS\Core\Singl
         }
 
         $importId = (int) (!empty($data['id']) ? $data['id'] : $object->getUid());
-        $fileBaseName = basename($data['url']);
+        $fileBaseName = basename((string) $data['url']);
         $targetFileName = $this->getImportFileName($importId, $fileBaseName);
+        if (!$targetFileName) {
+            return;
+        }
         $existingReference = $this->getFileReferenceIfExists($object, $property, $targetFileName);
 
         if (null !== $existingReference && $this->originalResourceIsValid($existingReference)) {

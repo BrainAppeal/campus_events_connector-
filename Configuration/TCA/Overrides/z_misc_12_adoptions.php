@@ -6,9 +6,7 @@ call_user_func(static function () {
     $ll = 'LLL:EXT:news/Resources/Private/Language/locallang_db.xlf:';
     $versionInformation = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Information\Typo3Version::class);
     if ($versionInformation->getMajorVersion() > 11) {
-        $extTableNames = array_filter(array_keys($GLOBALS['TCA']), static function ($var) {
-            return strpos($var, 'tx_campuseventsconnector_domain_model_') === 0;
-        });
+        $extTableNames = array_filter(array_keys($GLOBALS['TCA']), static fn($var) => str_starts_with((string) $var, 'tx_campuseventsconnector_domain_model_'));
         $dateTimeFields = ['tstamp', 'crdate', 'starttime', 'endtime', 'start_tstamp', 'end_tstamp',];
         foreach ($extTableNames as $tableName) {
             // remove cruser_id

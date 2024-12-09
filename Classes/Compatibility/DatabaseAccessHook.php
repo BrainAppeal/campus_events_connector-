@@ -31,7 +31,7 @@ class DatabaseAccessHook
     public function checkRecordUpdateAccess($table, $id, $fileMetadataRecord, $otherHookGrantedAccess, $dataHandler)
     {
         $accessAllowed = $otherHookGrantedAccess;
-        if ($table === 'sys_file_reference' || strpos($table, 'tx_campusevents') === 0) {
+        if ($table === 'sys_file_reference' || str_starts_with($table, 'tx_campusevents')) {
             $accessAllowed = 1;
         }
 

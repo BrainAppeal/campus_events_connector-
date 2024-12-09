@@ -30,7 +30,7 @@ interface DBALInterface
 
     public function updateObjects($objects);
 
-    public function removeNotUpdatedObjects($modelClass, $importSource, $pid, $importTimestamp, $excludeUids = []);
+    public function removeNotUpdatedObjects(string $modelClass, string $importSource, int $pid, int $importTimestamp, array $excludeUids = []);
 
     /**
      * Update the import fields of all records that were found in the api list call;
@@ -53,7 +53,7 @@ interface DBALInterface
      */
     public function addSysFileReference($sysFile, $target, $property, $attribs = []);
 
-    public function updateSysFileReference(FileReference $sysFileReference, $attribs = []);
+    public function updateSysFileReference(FileReference $sysSysFileReference, $attribs = []);
 
     public function checkIfPidIsValid($pid);
 

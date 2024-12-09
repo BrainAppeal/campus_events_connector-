@@ -67,10 +67,10 @@ abstract class ImportObjectGenerator implements SingletonInterface
         return $this->dbal;
     }
 
-    public function init($importSource, $pid)
+    public function init(string $importSource, int $pid): void
     {
         $this->importSource = $importSource;
-        $this->pid = (int)$pid;
+        $this->pid = $pid;
         $this->objects = [];
     }
 

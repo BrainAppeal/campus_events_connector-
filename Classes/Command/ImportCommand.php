@@ -10,6 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -65,12 +66,12 @@ class ImportCommand extends Command
     {
         Bootstrap::initializeBackendAuthentication();
         $baseUri = $input->getArgument('baseuri');
-        $targetPid = (int) $input->getArgument('pid');
-        $storageId = (int) $input->getArgument('storageId');
+        $targetPid = (int)$input->getArgument('pid');
+        $storageId = (int)$input->getArgument('storageId');
         $storageFolder = $input->getArgument('storageFolder');
         $apiKey = $input->getArgument('apikey');
-        $apiVersion = $input->getArgument('apiversion');
-        if ($apiVersion == self::API_VERSION_ABOVE_227) {
+        $apiVersion = (string)$input->getArgument('apiversion');
+        if ($apiVersion === self::API_VERSION_ABOVE_227) {
             $importer = $this->getExtendedImporter();
             $success = $importer->import($baseUri, $apiKey, $targetPid, $storageId, $storageFolder);
             if (!$success) {
@@ -85,9 +86,8 @@ class ImportCommand extends Command
             }
         } else {
             $importer = $this->getImporter();
-            $success = $importer->import($baseUri, $apiKey, $targetPid, (int) $storageId, $storageFolder);
+            $success = $importer->import($baseUri, $apiKey, $targetPid, $storageId, $storageFolder);
         }
-
 
         $this->callHooks($targetPid);
 

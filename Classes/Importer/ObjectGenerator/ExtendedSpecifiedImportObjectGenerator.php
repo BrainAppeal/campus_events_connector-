@@ -235,7 +235,7 @@ class ExtendedSpecifiedImportObjectGenerator extends ExtendedImportObjectGenerat
             'ß' => '&szlig;',
         ];
         $cleanedHtml = preg_replace("/<img[^>]+>/i", '', $html);
-        if (mb_strlen($cleanedHtml) > 65535) {
+        if (mb_strlen((string) $cleanedHtml) > 65535) {
             $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $append = '...';
             $cleanedHtml = $contentObject->cropHTML($cleanedHtml, 65530 . '|' . $append . '|1');
@@ -249,14 +249,14 @@ class ExtendedSpecifiedImportObjectGenerator extends ExtendedImportObjectGenerat
             foreach ($removeLineBreaksBeforeAndAfterTags as $tag) {
                 $tagStart = '<' . $tag . '>';
                 $tagEnd = '</' . $tag . '>';
-                if (stripos($cleanedHtmlRte, $tagStart) !== false) {
-                    $cleanedHtmlRte = preg_replace('/\s*(<' . $tag . '[^>]*>)\s*/i', '$1', $cleanedHtmlRte);
+                if (stripos((string) $cleanedHtmlRte, $tagStart) !== false) {
+                    $cleanedHtmlRte = preg_replace('/\s*(<' . $tag . '[^>]*>)\s*/i', '$1', (string) $cleanedHtmlRte);
                 }
-                if (stripos($cleanedHtmlRte, $tagEnd) !== false) {
-                    $cleanedHtmlRte = preg_replace('/\s*(<\/' . $tag . '>)\s*/i', '$1', $cleanedHtmlRte);
+                if (stripos((string) $cleanedHtmlRte, $tagEnd) !== false) {
+                    $cleanedHtmlRte = preg_replace('/\s*(<\/' . $tag . '>)\s*/i', '$1', (string) $cleanedHtmlRte);
                 }
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return $cleanedHtml;
         }
         return $cleanedHtmlRte;
@@ -352,8 +352,8 @@ class ExtendedSpecifiedImportObjectGenerator extends ExtendedImportObjectGenerat
     private function cropFieldValue(array $data, string $field, int $maxLength): string
     {
         $text = $data[$field] ?? '';
-        if ($maxLength > 0 && mb_strlen($text) > $maxLength) {
-            return mb_substr($text, 0, $maxLength);
+        if ($maxLength > 0 && mb_strlen((string) $text) > $maxLength) {
+            return mb_substr((string) $text, 0, $maxLength);
         }
         return $text;
     }
@@ -437,10 +437,10 @@ class ExtendedSpecifiedImportObjectGenerator extends ExtendedImportObjectGenerat
         if (!($object instanceof EventSession) || empty($data)) {
             return;
         }
-        if ($tstamp = $this->strToTime(isset($data['endDate']) ? $data['endDate'] : null)) {
+        if ($tstamp = $this->strToTime($data['endDate'] ?? null)) {
             $object->setEndTstamp($tstamp);
         }
-        if ($tstamp = $this->strToTime(isset($data['startDate']) ? $data['startDate'] : null)) {
+        if ($tstamp = $this->strToTime($data['startDate'] ?? null)) {
             $object->setStartTstamp($tstamp);
         }
         if (!empty($data['sessionDates'])){
@@ -499,10 +499,10 @@ class ExtendedSpecifiedImportObjectGenerator extends ExtendedImportObjectGenerat
         if (!($object instanceof TimeRange) || empty($data)) {
             return;
         }
-        if ($tstamp = $this->strToTime(isset($data['endDate']) ? $data['endDate'] : null)) {
+        if ($tstamp = $this->strToTime($data['endDate'] ?? null)) {
             $object->setEndTstamp($tstamp);
         }
-        if ($tstamp = $this->strToTime(isset($data['startDate']) ? $data['startDate'] : null)) {
+        if ($tstamp = $this->strToTime($data['startDate'] ?? null)) {
             $object->setStartTstamp($tstamp);
         }
         $object->setEndDateIsSet(!empty($data['endDateTimeIsSet']));
@@ -536,7 +536,7 @@ class ExtendedSpecifiedImportObjectGenerator extends ExtendedImportObjectGenerat
      */
     protected function strToTime($dateValue)
     {
-        if (!empty($dateValue) && ($tstamp = strtotime($dateValue)) && $tstamp <= self::UNIX_TIMESTAMP_MAX) {
+        if (!empty($dateValue) && ($tstamp = strtotime((string) $dateValue)) && $tstamp <= self::UNIX_TIMESTAMP_MAX) {
             return $tstamp;
         }
         return false;

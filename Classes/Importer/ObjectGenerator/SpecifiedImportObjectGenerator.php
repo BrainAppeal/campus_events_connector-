@@ -208,8 +208,8 @@ class SpecifiedImportObjectGenerator extends ImportObjectGenerator
         if ($tstamp = $this->strToTime($data['start_date'])) {
             $object->setStartTstamp($tstamp);
         }
-        $object->setStartDateIsSet(isset($data['start_date_is_set']) ? $data['start_date_is_set'] : true);
-        $object->setEndDateIsSet(isset($data['end_date_is_set']) ? $data['end_date_is_set'] : true);
+        $object->setStartDateIsSet($data['start_date_is_set'] ?? true);
+        $object->setEndDateIsSet($data['end_date_is_set'] ?? true);
     }
 
     /**
@@ -220,7 +220,7 @@ class SpecifiedImportObjectGenerator extends ImportObjectGenerator
      */
     protected function strToTime($dateValue)
     {
-        if (!empty($dateValue) && ($tstamp = strtotime($dateValue)) && $tstamp <= self::UNIX_TIMESTAMP_MAX) {
+        if (!empty($dateValue) && ($tstamp = strtotime((string) $dateValue)) && $tstamp <= self::UNIX_TIMESTAMP_MAX) {
             return $tstamp;
         }
         return false;

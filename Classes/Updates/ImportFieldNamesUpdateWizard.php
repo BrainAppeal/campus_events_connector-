@@ -1,31 +1,19 @@
 <?php
+
 namespace BrainAppeal\CampusEventsConnector\Updates;
 
 use BrainAppeal\CampusEventsConnector\Service\UpdateService;
 use Symfony\Component\Console\Output\OutputInterface;
-use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
+#[UpgradeWizard('campusEventsConnector')]
 class ImportFieldNamesUpdateWizard implements UpgradeWizardInterface
 {
-    public const IDENTIFIER = 'campusEventsConnector';
-
     /** @var UpdateService */
     protected $updateService;
-
-    /**
-     * @var string
-     */
-    protected $title = 'Campus Events: Migrate import fields';
-
-    public static $identifier = self::IDENTIFIER;
-
-    /**
-     * @var string
-     */
-    protected $description = 'Campus Events: Migrates the old import fields to the new named ones.';
 
     /**
      * @var OutputInterface
@@ -35,9 +23,9 @@ class ImportFieldNamesUpdateWizard implements UpgradeWizardInterface
     /**
      * @return UpdateService
      */
-    protected function getUpdateService()
+    protected function getUpdateService(): UpdateService
     {
-        if (null === $this->updateService) {
+        if ($this->updateService === null) {
             $this->updateService = GeneralUtility::makeInstance(UpdateService::class);
         }
         return $this->updateService;
@@ -46,58 +34,11 @@ class ImportFieldNamesUpdateWizard implements UpgradeWizardInterface
     /**
      * Returns the title attribute
      *
-     * @deprecated Deprecated since TYPO3 v9
      * @return string The title of this update wizard
      */
     public function getTitle(): string
     {
-        if ($this->title) {
-            return $this->title;
-        }
-        return self::$identifier;
-    }
-
-    /**
-     * Sets the title attribute
-     *
-     * @param string $title The title of this update wizard
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    /**
-     * Returns the identifier of this class
-     *
-     * @return string The identifier of this update wizard
-     */
-    public function getIdentifier(): string
-    {
-        return self::IDENTIFIER;
-    }
-
-    /**
-     * Marks some wizard as being "seen" so that it is not shown again.
-     *
-     * Writes the info in LocalConfiguration.php
-     *
-     * @param mixed $confValue The configuration is set to this value
-     */
-    protected function markWizardAsDone($confValue = 1)
-    {
-        GeneralUtility::makeInstance(Registry::class)->set('installUpdate', static::class, $confValue);
-    }
-
-    /**
-     * Checks if this wizard has been "done" before
-     *
-     * @return bool TRUE if wizard has been done before, FALSE otherwise
-     */
-    protected function isWizardDone()
-    {
-        $wizardClassName = static::class;
-        return GeneralUtility::makeInstance(Registry::class)->get('installUpdate', $wizardClassName, false);
+        return 'Campus Events: Migrate import fields';
     }
 
     /**
@@ -107,7 +48,7 @@ class ImportFieldNamesUpdateWizard implements UpgradeWizardInterface
      */
     public function getDescription(): string
     {
-        return $this->description;
+        return 'Campus Events: Migrates the old import fields to the new named ones.';
     }
 
     /**
@@ -118,11 +59,7 @@ class ImportFieldNamesUpdateWizard implements UpgradeWizardInterface
      */
     public function executeUpdate(): bool
     {
-        $updatesPerformed = $this->getUpdateService()->performUpdates();
-        if ($updatesPerformed === true) {
-            $this->markWizardAsDone();
-        }
-        return $updatesPerformed;
+        return $this->getUpdateService()->performUpdates();
     }
 
     /**
@@ -136,7 +73,7 @@ class ImportFieldNamesUpdateWizard implements UpgradeWizardInterface
     {
         $description = '';
         $result = $this->checkForUpdate();
-        if (null !== $this->output) {
+        if ($this->output !== null) {
             $this->output->write($description);
         }
         return $result;
@@ -152,7 +89,7 @@ class ImportFieldNamesUpdateWizard implements UpgradeWizardInterface
     public function getPrerequisites(): array
     {
         return [
-            DatabaseUpdatedPrerequisite::class
+            DatabaseUpdatedPrerequisite::class,
         ];
     }
 
@@ -173,12 +110,7 @@ class ImportFieldNamesUpdateWizard implements UpgradeWizardInterface
      */
     public function checkForUpdate(): bool
     {
-        $updateCheck = $this->getUpdateService()->checkIfUpdateIsNeeded();
-
-        if ($this->isWizardDone()) {
-            return false;
-        }
-        return $updateCheck;
+        return $this->getUpdateService()->checkIfUpdateIsNeeded();
     }
 
 }

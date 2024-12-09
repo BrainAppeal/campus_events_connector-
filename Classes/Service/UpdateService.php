@@ -4,9 +4,7 @@ namespace BrainAppeal\CampusEventsConnector\Service;
 
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 
 class UpdateService
 {
@@ -26,8 +24,8 @@ class UpdateService
     ];
     protected $fields = [
         'import_source',
-	    'import_id',
-	    'imported_at'
+        'import_id',
+        'imported_at',
     ];
 
     /**
@@ -46,9 +44,9 @@ class UpdateService
                 ->executeQuery()
                 ->fetchAssociative();
             if (!empty($tableContents)
-                && ((array_key_exists('zzz_deleted_import_source',$tableContents)
-                || array_key_exists('import_source',$tableContents))
-                && ((string) $tableContents['ce_import_source'] === ''))) {
+                && ((array_key_exists('zzz_deleted_import_source', $tableContents)
+                || array_key_exists('import_source', $tableContents))
+                && ((string)$tableContents['ce_import_source'] === ''))) {
                 $updateNeeded = true;
             }
         }
@@ -58,19 +56,19 @@ class UpdateService
     /**
      * @return bool
      */
-    public function performUpdates()
+    public function performUpdates(): bool
     {
         foreach ($this->tables as $table) {
             $connection = GeneralUtility::makeInstance(ConnectionPool::class);
             $queryBuilder = $connection->getQueryBuilderForTable($table);
             $queryBuilder->getRestrictions()->removeAll();
-            $tableContents = $queryBuilder->select('*')->from($table)->executeQuery()->fetch(0);
+            $tableContents = $queryBuilder->select('*')->from($table)->executeQuery()->fetchAssociative();
             if (!empty($tableContents)) {
                 foreach ($this->fields as $field) {
                     $fieldPrefixes = ['zzz_deleted_', ''];
                     foreach ($fieldPrefixes as $fieldPrefix) {
-                        if (array_key_exists($fieldPrefix.$field, $tableContents)
-                            && ($tableContents['ce_'.$field] === '' ||  $tableContents['ce_'.$field] === NULL)) {
+                        if (array_key_exists($fieldPrefix . $field, $tableContents)
+                            && ($tableContents['ce_' . $field] === '' ||  $tableContents['ce_' . $field] === null)) {
                             $queryBuilder = $connection->getQueryBuilderForTable($table);
                             $queryBuilder->update($table)
                                 ->where(
@@ -79,7 +77,7 @@ class UpdateService
                                         $queryBuilder->createNamedParameter($tableContents['uid'], Connection::PARAM_INT)
                                     )
                                 )
-                                ->set('ce_'.$field, $tableContents[$fieldPrefix.$field]);
+                                ->set('ce_' . $field, $tableContents[$fieldPrefix . $field]);
                             $queryBuilder->executeStatement();
                             break;
                         }

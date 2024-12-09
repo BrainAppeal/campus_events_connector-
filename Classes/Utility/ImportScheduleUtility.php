@@ -73,7 +73,7 @@ class ImportScheduleUtility implements SingletonInterface
         $queryBuilder->count('*')
             ->from(self::TABLE_IMPORT_ROW);
         $queryBuilder->where(...$conditions);
-        return $queryBuilder->execute()->fetchOne();
+        return $queryBuilder->executeQuery()->fetchOne();
     }
 
 
@@ -99,7 +99,7 @@ class ImportScheduleUtility implements SingletonInterface
             $queryBuilder->where(...$conditions);
         }
         $queryBuilder->orderBy('uid', 'ASC');
-        return $queryBuilder->execute()->fetchAll(\PDO::FETCH_ASSOC);
+        return $queryBuilder->executeQuery()->fetchAllAssociative();
     }
 
     /**
@@ -142,16 +142,12 @@ class ImportScheduleUtility implements SingletonInterface
         if (!empty($previousItem)) {
             $values['target_record_id'] = $previousItem['target_record_id'];
             $queryBuilder = $this->getScheduleQueryBuilder();
-            $queryBuilder->insert(self::TABLE_IMPORT_ROW)
-                ->values($values)->execute();
+            $queryBuilder->insert(self::TABLE_IMPORT_ROW)->values($values)->executeStatement();
             $deleteQueryBuilder = $this->getScheduleQueryBuilder();
-            $deleteQueryBuilder->delete(self::TABLE_IMPORT_ROW)
-                ->where('uid = ' . (int) $previousItem['uid'])
-                ->execute();
+            $deleteQueryBuilder->delete(self::TABLE_IMPORT_ROW)->where('uid = ' . (int) $previousItem['uid'])->executeStatement();
         } else {
             $queryBuilder = $this->getScheduleQueryBuilder();
-            $queryBuilder->insert(self::TABLE_IMPORT_ROW)
-                ->values($values)->execute();
+            $queryBuilder->insert(self::TABLE_IMPORT_ROW)->values($values)->executeStatement();
         }
 
     }
@@ -162,9 +158,9 @@ class ImportScheduleUtility implements SingletonInterface
      *
      * @param int $uid
      * @param int $targetRecordId
-     * @param false $keepImportData
+     * @param bool $keepImportData
      */
-    public function finishScheduleEntryAsImported($uid, $targetRecordId = 0, $keepImportData = false)
+    public function finishScheduleEntryAsImported(int $uid, int $targetRecordId = 0, bool $keepImportData = false)
     {
         $scheduleConnection = $this->getScheduleConnection();
 
@@ -177,7 +173,7 @@ class ImportScheduleUtility implements SingletonInterface
         if (!$keepImportData) {
             $values['import_data'] = json_encode(['finished' => 1]);
         }
-        $scheduleConnection->update(self::TABLE_IMPORT_ROW, $values, ['uid' => (int) $uid]);
+        $scheduleConnection->update(self::TABLE_IMPORT_ROW, $values, ['uid' => $uid]);
     }
 
     /**
@@ -187,9 +183,7 @@ class ImportScheduleUtility implements SingletonInterface
     public function cleanUp(string $timeModifier = '-1 week')
     {
         $deleteQueryBuilder = $this->getScheduleQueryBuilder();
-        $deleteQueryBuilder->delete(self::TABLE_IMPORT_ROW)
-            ->where('crdate < ' . strtotime($timeModifier))
-            ->execute();
+        $deleteQueryBuilder->delete(self::TABLE_IMPORT_ROW)->where('crdate < ' . strtotime($timeModifier))->executeStatement();
     }
 
     /**

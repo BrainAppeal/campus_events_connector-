@@ -18,30 +18,17 @@ use BrainAppeal\CampusEventsConnector\Domain\Model\ImportedModelInterface;
 class ImportMappingModel
 {
     /**
-     * @var array
-     */
-    protected $queueItem;
-
-    /**
      * @var ImportedModelInterface|null
      */
     protected $domainModel;
 
     protected $isProcessed = false;
-    /**
-     * @var int
-     */
-    private $importId;
-    /**
-     * @var string
-     */
-    private $importType;
 
-    public function __construct(int $importId, string $importType, $queueItem = null)
+    /**
+     * @param mixed[] $queueItem
+     */
+    public function __construct(private readonly int $importId, private readonly string $importType, protected $queueItem = null)
     {
-        $this->importId = $importId;
-        $this->importType = $importType;
-        $this->queueItem = $queueItem;
     }
 
     /**
@@ -137,7 +124,7 @@ class ImportMappingModel
     public function getImportData()
     {
         if (null !== $this->queueItem && !empty($this->queueItem['import_data'])) {
-            return json_decode($this->queueItem['import_data'], true);
+            return json_decode((string) $this->queueItem['import_data'], true);
         }
         return null;
     }

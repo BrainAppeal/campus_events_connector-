@@ -18,6 +18,7 @@ use BrainAppeal\CampusEventsConnector\Domain\Model\ImportedModelInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
@@ -74,9 +75,9 @@ abstract class AbstractImportedRepository extends Repository
      * @param null|int|int[] $pid
      * @param array $constraints Optional query constraints
      * @param int $limit
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return QueryResultInterface|list<array<string,mixed>> The query result object or an array if $returnRawQueryResult is TRUE
      */
-    public function findListByPid($pid, $constraints = [], $limit = 0)
+    public function findListByPid($pid, array $constraints = [], int $limit = 0)
     {
         $this->setPidRestriction($pid);
         $query = $this->createQuery();

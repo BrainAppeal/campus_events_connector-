@@ -75,7 +75,7 @@ class DBAL implements \BrainAppeal\CampusEventsConnector\Importer\DBAL\DBALInter
     public function updateObjects($objects)
     {
         foreach ($objects as $object) {
-            $repository = $this->getRepository(get_class($object));
+            $repository = $this->getRepository($object::class);
             if ($object instanceof ImportedModelInterface && null !== $repository) {
                 $object->setCeImportedAt(time());
                 if ($object->getUid() > 0) {
@@ -93,7 +93,7 @@ class DBAL implements \BrainAppeal\CampusEventsConnector\Importer\DBAL\DBALInter
     private function deleteRawFromTable($tableName, $importSource, $pid, $importTimestamp, $excludeUids)
     {
         $pid = (int)$pid;
-        $importSource = preg_replace("/['\"]/", "", $importSource);
+        $importSource = preg_replace("/['\"]/", "", (string) $importSource);
         $importTimestamp = (int)$importTimestamp;
 
         /** @noinspection SqlResolve */
@@ -107,8 +107,7 @@ class DBAL implements \BrainAppeal\CampusEventsConnector\Importer\DBAL\DBALInter
         /** @var ConnectionPool $connectionPool */
         $connectionPool = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ConnectionPool::class);
         $connection = $connectionPool->getConnectionForTable($tableName);
-        $statement = $connection->prepare($deleteSql);
-        $statement->executeStatement([$pid, $importSource, $importTimestamp]);
+        $connection->executeStatement($deleteSql, [$pid, $importSource, $importTimestamp]);
     }
 
     /**
@@ -121,17 +120,14 @@ class DBAL implements \BrainAppeal\CampusEventsConnector\Importer\DBAL\DBALInter
         if (!empty($uidListCsv)) {
             // Update timestamp for all items from the api list result + mark as not deleted
             $sql = "UPDATE $tableName SET ce_imported_at = ?, deleted = 0 WHERE ce_import_source = ? AND ce_import_id IN ($uidListCsv)";
-
-            $statement = $connection->prepare($sql);
-            $statement->executeStatement([$tstamp, $importSource]);
+            $connection->executeStatement($sql, [$tstamp, $importSource]);
         }
         // Mark all items as deleted that were not included in the api list result
         $sql = "UPDATE $tableName SET tstamp = ?, deleted = 1 WHERE ce_import_source = ?";
         if (!empty($uidListCsv)) {
             $sql .= " AND ce_import_id NOT IN ($uidListCsv)";
         }
-        $statement = $connection->prepare($sql);
-        $statement->executeStatement([$tstamp, $importSource]);
+        $connection->executeStatement($sql, [$tstamp, $importSource]);
     }
 
     protected function getConnectionForTable($tableName)
@@ -141,7 +137,7 @@ class DBAL implements \BrainAppeal\CampusEventsConnector\Importer\DBAL\DBALInter
         return $connectionPool->getConnectionForTable($tableName);
     }
 
-    public function removeNotUpdatedObjects($modelClass, $importSource, $pid, $importTimestamp, $excludeUids = [])
+    public function removeNotUpdatedObjects(string $modelClass, string $importSource, int $pid, int $importTimestamp, array $excludeUids = [])
     {
         if (is_a($modelClass, FileReference::class, true)) {
             $this->deleteRawFromTable('sys_file_reference', $importSource, $pid, $importTimestamp, $excludeUids);
@@ -170,32 +166,32 @@ class DBAL implements \BrainAppeal\CampusEventsConnector\Importer\DBAL\DBALInter
     }
 
     /**
-     * @param FileReference $fileReference
+     * @param FileReference $sysFileReference
      * @param array $attribs
      */
-    public function updateSysFileReference(FileReference $fileReference, $attribs = [])
+    public function updateSysFileReference(FileReference $sysFileReference, $attribs = [])
     {
-        $data['sys_file_reference'][$fileReference->getUid()] = $attribs;
+        $data['sys_file_reference'][$sysFileReference->getUid()] = $attribs;
 
         // Get an instance of the DataHandler and process the data
         /** @var \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler */
         $dataHandler = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-        $dataHandler->start($data, array());
+        $dataHandler->start($data, []);
         $dataHandler->process_datamap();
     }
 
     /**
      * @param \TYPO3\CMS\Core\Resource\File $sysFile
      * @param ImportedModelInterface $target
-     * @param string $field
+     * @param string $property
      * @param array $attribs
      * @return int|null
      */
-    public function addSysFileReference($sysFile, $target, $field, $attribs = [])
+    public function addSysFileReference($sysFile, $target, $property, $attribs = [])
     {
         $uidLocal = $sysFile->getUid();
         $uidForeign = $target->getUid();
-        $table = $this->getTableForModelClass(get_class($target));
+        $table = $this->getTableForModelClass($target::class);
         $storagePid = $target->getPid();
 
 
@@ -206,18 +202,18 @@ class DBAL implements \BrainAppeal\CampusEventsConnector\Importer\DBAL\DBALInter
             'table_local' => 'sys_file',
             'uid_foreign' => $uidForeign,
             'tablenames'  => $table,
-            'fieldname'   => $field,
+            'fieldname'   => $property,
             'pid'         => $storagePid,
         ]);
         $data = [
             'sys_file_reference' => [$newId => $attribs],
-            $table               => [$uidForeign => [$field => $newId]],
+            $table               => [$uidForeign => [$property => $newId]],
         ];
 
         // Get an instance of the DataHandler and process the data
         /** @var \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler */
         $dataHandler = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
-        $dataHandler->start($data, array());
+        $dataHandler->start($data, []);
         $dataHandler->process_datamap();
         if (!empty($dataHandler->substNEWwithIDs[$newId])) {
             return $dataHandler->substNEWwithIDs[$newId];

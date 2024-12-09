@@ -42,8 +42,8 @@ class EventImage extends AbstractImportedEntity implements BelongsToEventInterfa
     /**
      * Image
      * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
-     * @TYPO3\CMS\Extbase\Annotation\ORM\Cascade("remove")
      */
+    #[\TYPO3\CMS\Extbase\Annotation\ORM\Cascade(['value' => 'remove'])]
     protected $imageFile;
 
     /**

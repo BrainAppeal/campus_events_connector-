@@ -16,16 +16,37 @@ namespace BrainAppeal\CampusEventsConnector\Task;
 use BrainAppeal\CampusEventsConnector\Http\HttpException;
 use BrainAppeal\CampusEventsConnector\Importer\ExtendedApiConnector;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Resource\StorageRepository;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
+use TYPO3\CMS\Core\Utility\DebugUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
  * Additional BE fields for ip address anonymization task.
  */
-class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
+class EventImportAdditionalFieldProvider implements AdditionalFieldProviderInterface
 {
+    public const LL_PREFIX = 'LLL:EXT:campus_events_connector/Resources/Private/Language/locallang.xlf:tx_campuseventsconnector_task_eventimporttask';
+
+    /**
+     * Add a flash message
+     *
+     * @param string $message the flash message content
+     * @param ContextualFeedbackSeverity $severity the flash message severity
+     */
+    protected function addMessage(string $message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::OK): void
+    {
+        $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
+        $service = GeneralUtility::makeInstance(FlashMessageService::class);
+        $queue = $service->getMessageQueueByIdentifier();
+        $queue->enqueue($flashMessage);
+    }
+
     /**
      * Add additional fields
      *
@@ -62,7 +83,7 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         $fieldHtml = '<input class="form-control" type="text" ' . 'name="' . $fieldName . '" ' . 'id="' . $fieldId . '" ' . 'value="' . $taskInfo[$fieldId] . '" ' . 'size="4">';
         $fieldConfiguration = [
             'code' => $fieldHtml,
-            'label' => 'LLL:EXT:campus_events_connector/Resources/Private/Language/locallang.xlf:tx_campuseventsconnector_task_eventimporttask.api_key',
+            'label' => self::LL_PREFIX . '.api_key',
             'cshKey' => '_MOD_system_txschedulerM1',
             'cshLabel' => $fieldId
         ];
@@ -97,7 +118,7 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 
         $fieldConfiguration = [
             'code' => $fieldHtml,
-            'label' => 'LLL:EXT:campus_events_connector/Resources/Private/Language/locallang.xlf:tx_campuseventsconnector_task_eventimporttask.api_version',
+            'label' => self::LL_PREFIX . '.api_version',
             'cshKey' => '_MOD_system_txschedulerM1',
             'cshLabel' => $fieldId
         ];
@@ -120,7 +141,7 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         $fieldHtml = '<input class="form-control" type="text" ' . 'name="' . $fieldName . '" ' . 'id="' . $fieldId . '" ' . 'value="' . $taskInfo[$fieldId] . '" ' . 'size="4">';
         $fieldConfiguration = [
             'code' => $fieldHtml,
-            'label' => 'LLL:EXT:campus_events_connector/Resources/Private/Language/locallang.xlf:tx_campuseventsconnector_task_eventimporttask.base_uri',
+            'label' => self::LL_PREFIX . '.base_uri',
             'cshKey' => '_MOD_system_txschedulerM1',
             'cshLabel' => $fieldId
         ];
@@ -143,7 +164,7 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         $fieldHtml = '<input class="form-control" type="text" ' . 'name="' . $fieldName . '" ' . 'id="' . $fieldId . '" ' . 'value="' . $taskInfo[$fieldId] . '" ' . '>';
         $fieldConfiguration = [
             'code' => $fieldHtml,
-            'label' => 'LLL:EXT:campus_events_connector/Resources/Private/Language/locallang.xlf:tx_campuseventsconnector_task_eventimporttask.pid',
+            'label' => self::LL_PREFIX . '.pid',
             'cshKey' => '_MOD_system_txschedulerM1',
             'cshLabel' => $fieldId
         ];
@@ -152,7 +173,7 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 
     /**
      * @param EventImportTask|null $task When editing, reference to the current task. NULL when adding.
-     * @return array Array containing all the information pertaining to the additional fields
+     * @return array{code: string, label: string, cshKey: string, cshLabel: string} Array containing all the information pertaining to the additional fields
      */
     protected function getStorageIdAdditionalField(?EventImportTask $task): array
     {
@@ -160,7 +181,7 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         $fieldName = 'tx_scheduler[' . $fieldId . ']';
 
         /** @var \TYPO3\CMS\Core\Resource\ResourceStorage[] $storages */
-        $storages = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class)->findAll();
+        $storages = GeneralUtility::makeInstance(StorageRepository::class)->findAll();
         $options = [];
         foreach ($storages as $storage) {
             $selAttr = null !== $task && (int) $task->storageId === $storage->getUid() ? ' selected="selected"' : '';
@@ -171,7 +192,7 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
 
         return [
             'code' => $fieldHtml,
-            'label' => 'LLL:EXT:campus_events_connector/Resources/Private/Language/locallang.xlf:tx_campuseventsconnector_task_eventimporttask.storage_id',
+            'label' => self::LL_PREFIX . '.storage_id',
             'cshKey' => '_MOD_system_txschedulerM1',
             'cshLabel' => $fieldId
         ];
@@ -194,7 +215,7 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         $fieldHtml = '<input class="form-control" type="text" ' . 'name="' . $fieldName . '" ' . 'id="' . $fieldId . '" ' . 'value="' . $taskInfo[$fieldId] . '" ' . '>';
         $fieldConfiguration = [
             'code' => $fieldHtml,
-            'label' => 'LLL:EXT:campus_events_connector/Resources/Private/Language/locallang.xlf:tx_campuseventsconnector_task_eventimporttask.storage_folder',
+            'label' => self::LL_PREFIX . '.storage_folder',
             'cshKey' => '_MOD_system_txschedulerM1',
             'cshLabel' => $fieldId
         ];
@@ -228,7 +249,7 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         $validData = true;
         $baseUri = $submittedData['campusEventsConnector_eventImport_baseUri'];
         if (empty($baseUri)) {
-            $this->addTranslatableMessage('LLL:EXT:campus_events_connector/Resources/Private/Language/locallang.xlf:tx_campuseventsconnector_task_eventimporttask.error.invalid_base_uri');
+            $this->addTranslatableMessage(self::LL_PREFIX . '.error.invalid_base_uri');
             $validData = false;
         }
 
@@ -237,28 +258,34 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
             ? EventImportTask::API_VERSION_LEGACY : EventImportTask::API_VERSION_ABOVE_227;
 
         $apiKey = $submittedData['campusEventsConnector_eventImport_apiKey'];
-        if (empty($apiKey) || preg_match('/^[\w]{8}-[\w]{16}-[\w]{8}$/', $apiKey) !== 1) {
-            $this->addTranslatableMessage('LLL:EXT:campus_events_connector/Resources/Private/Language/locallang.xlf:tx_campuseventsconnector_task_eventimporttask.error.invalid_api_key');
+        if (empty($apiKey) || preg_match('/^[\w]{8}-[\w]{16}-[\w]{8}$/', (string) $apiKey) !== 1) {
+            $this->addTranslatableMessage(self::LL_PREFIX . '.error.invalid_api_key');
             $validData = false;
         }
 
         if ($validData) {
+            $hasApiCheckFailureMessage = false;
             if ($baseUri !== EventImportTask::BASE_URI_DEFAULT) {
                 $apiConnector = $this->initializeApiConnector($baseUri, $apiKey, $apiVersion);
-                try {
-                    $validData = $apiConnector->checkApiVersion();
-                } catch (HttpException $httpException) {
-                    $this->addMessage(
-                        $httpException->getMessage(),
-                        FlashMessage::ERROR
-                    );
+                $validData = $apiConnector->checkApiVersion();
+                if (!empty($apiConnector->getExceptions())) {
                     $validData = false;
+                    foreach ($apiConnector->getExceptions() as $apiException) {
+                        $this->addMessage(
+                            $apiException->getMessage(),
+                            ContextualFeedbackSeverity::ERROR
+                        );
+                        if ($apiException instanceof HttpException && $apiException->getCode() === 401) {
+                            $hasApiCheckFailureMessage = true;
+                            $this->addTranslatableMessage(self::LL_PREFIX . '.error.invalid_api_key');
+                        }
+                    }
                 }
             } else {
                 $validData = false;
             }
-            if (!$validData) {
-                $this->addTranslatableMessage('LLL:EXT:campus_events_connector/Resources/Private/Language/locallang.xlf:tx_campuseventsconnector_task_eventimporttask.error.invalid_base_uri');
+            if (!$validData && !$hasApiCheckFailureMessage) {
+                $this->addTranslatableMessage(self::LL_PREFIX . '.error.invalid_base_uri');
             }
         }
 
@@ -275,12 +302,12 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
     {
         if ($apiVersion === EventImportTask::API_VERSION_LEGACY) {
             /** @var \BrainAppeal\CampusEventsConnector\Importer\ApiConnector $apiConnector */
-            $apiConnector = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            $apiConnector = GeneralUtility::makeInstance(
                 \BrainAppeal\CampusEventsConnector\Importer\ApiConnector::class
             );
         } else {
             /** @var ExtendedApiConnector $apiConnector */
-            $apiConnector = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ExtendedApiConnector::class);
+            $apiConnector = GeneralUtility::makeInstance(ExtendedApiConnector::class);
         }
         $apiConnector->setBaseUri($baseUri);
         $apiConnector->setApiKey($apiKey);
@@ -302,7 +329,7 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         }
         if (!$validData) {
             // Issue error message
-            $this->addTranslatableMessage('LLL:EXT:campus_events_connector/Resources/Private/Language/locallang.xlf:tx_campuseventsconnector_task_eventimporttask.error.invalid_pid');
+            $this->addTranslatableMessage(self::LL_PREFIX . '.error.invalid_pid');
         }
         return $validData;
     }
@@ -311,9 +338,9 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
      * Add a translatable flash message
      *
      * @param string $messageKey the message key to be translated
-     * @param int $severity the flash message severity
+     * @param ContextualFeedbackSeverity $severity the flash message severity
      */
-    protected function addTranslatableMessage(string $messageKey, int $severity = AbstractMessage::ERROR): void
+    protected function addTranslatableMessage(string $messageKey, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::ERROR): void
     {
         $message = $this->getLanguageService()->sL($messageKey);
         $this->addMessage($message, $severity);
@@ -332,7 +359,7 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
             $validData = true;
         } else {
             // Issue error message
-            $this->addTranslatableMessage('LLL:EXT:campus_events_connector/Resources/Private/Language/locallang.xlf:tx_campuseventsconnector_task_eventimporttask.error.invalid_storage_id');
+            $this->addTranslatableMessage(self::LL_PREFIX . '.error.invalid_storage_id');
         }
         return $validData;
     }
@@ -350,7 +377,7 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
             $validData = true;
         } else {
             // Issue error message
-            $this->addTranslatableMessage('LLL:EXT:campus_events_connector/Resources/Private/Language/locallang.xlf:tx_campuseventsconnector_task_eventimporttask.error.invalid_storage_folder');
+            $this->addTranslatableMessage(self::LL_PREFIX . '.error.invalid_storage_folder');
         }
         return $validData;
     }
@@ -367,7 +394,7 @@ class EventImportAdditionalFieldProvider extends AbstractAdditionalFieldProvider
         $task->apiKey = $submittedData['campusEventsConnector_eventImport_apiKey'];
         $task->apiVersion = $submittedData['campusEventsConnector_eventImport_apiVersion'];
         $baseUri = $submittedData['campusEventsConnector_eventImport_baseUri'];
-        if (!empty($baseUri) && strpos($baseUri, 'http') !== 0) {
+        if (!empty($baseUri) && !str_starts_with((string) $baseUri, 'http')) {
             $baseUri = 'https://' . $baseUri;
         }
         $task->baseUri = $baseUri;

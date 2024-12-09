@@ -278,16 +278,16 @@ class Event extends AbstractImportedEntity
      * timeRanges
      *
      * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\TimeRange>
-     * @TYPO3\CMS\Extbase\Annotation\ORM\Cascade("remove")
      */
+    #[\TYPO3\CMS\Extbase\Annotation\ORM\Cascade(['value' => 'remove'])]
     protected $timeRanges;
 
     /**
      * eventSessions
      *
      * @var ObjectStorage<\BrainAppeal\CampusEventsConnector\Domain\Model\EventSession>
-     * @TYPO3\CMS\Extbase\Annotation\ORM\Cascade("remove")
      */
+    #[\TYPO3\CMS\Extbase\Annotation\ORM\Cascade(['value' => 'remove'])]
     protected $eventSessions;
 
     /**

@@ -16,6 +16,11 @@ namespace BrainAppeal\CampusEventsConnector\Importer;
 use BrainAppeal\CampusEventsConnector\Importer\DBAL\DBALFactory;
 use BrainAppeal\CampusEventsConnector\Importer\ObjectGenerator\ExtendedSpecifiedImportObjectGenerator;
 use BrainAppeal\CampusEventsConnector\Utility\ImportScheduleUtility;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 
@@ -59,18 +64,19 @@ class ExtendedImporter
      *
      * @param string $baseUri The API base uri
      * @param string $apiKey The API key
-     * @param int|null $pid The storage page id
+     * @param int $pid The storage page id
      * @param int $storageId The storage id
      * @param string $storageFolder The storage folder
      * @return bool Returns true if execution was successful, false otherwise
      */
-    public function import($baseUri, $apiKey, $pid, $storageId, $storageFolder)
+    public function import(string $baseUri, string $apiKey, int $pid, int $storageId, string $storageFolder): bool
     {
+        $this->initializeExtbaseEnvironment($pid);
         // Enable debug mode to keep queue item data (prevent repeated API access for the same data)
         // + force update of all found items
         //$this->debug = true;//'forceUpdate'
         if (!$this->debug || $this->debug === 'forceUpdate') {
-            $this->getImportScheduleUtility()->cleanUp();
+            $this->getImportScheduleUtility()?->cleanUp();
         }
         $importStartTimestamp = time();
         $apiConnector = $this->apiConnector;
@@ -81,7 +87,7 @@ class ExtendedImporter
         $this->fetchDataFromApi($apiConnector, $importStartTimestamp);
         /** @var ImportScheduleUtility $importScheduleUtility */
         $importScheduleUtility = GeneralUtility::makeInstance(ImportScheduleUtility::class);
-        if ($this->hasChangedData || 0 < (int) $importScheduleUtility->countUnprocessedScheduleEntries()) {
+        if ($this->hasChangedData || (int)$importScheduleUtility->countUnprocessedScheduleEntries() > 0) {
             $dataMap = $apiConnector->getDataMap();
             try {
                 /** @var ExtendedFileImporter $fileImporter */
@@ -109,10 +115,36 @@ class ExtendedImporter
         if ($this->debug && !empty($this->exceptions)) {
             /** @var \Throwable $exception */
             foreach ($this->exceptions as $exception) {
-                echo $exception->getMessage() . ' ['.$exception->getFile() . '::' . $exception->getLine() . ']' . "\n";
+                echo $exception->getMessage() . ' [' . $exception->getFile() . '::' . $exception->getLine() . ']' . "\n";
             }
         }
         return empty($this->exceptions);
+    }
+
+    /**
+     * Since TYPO3 13.4 we need the request object to initialize the configuration manager for Extbase
+     * @param int $targetPid
+     * @return void
+     */
+    protected function initializeExtbaseEnvironment(int $targetPid): void
+    {
+        // TYPO3 >= 13: Initialize TYPO3_REQUEST, so Extbase can be used
+        // @see \TYPO3\CMS\Extbase\Configuration\ConfigurationManager::getConfiguration
+        if (!isset($GLOBALS['TYPO3_REQUEST'])) {
+            $request = (new ServerRequest())->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
+            $pageRecord = BackendUtility::getRecord('pages', $targetPid);
+            if ($pageRecord) {
+                $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+                try {
+                    $site = $siteFinder->getSiteByPageId($targetPid);
+                    $request = $request->withAttribute('site', $site);
+                } catch (SiteNotFoundException $e) {
+                    unset($e);
+                }
+                $request = $request->withQueryParams(['id' => $targetPid]);
+            }
+            $GLOBALS['TYPO3_REQUEST'] = $request;
+        }
     }
 
     /**
@@ -190,15 +222,15 @@ class ExtendedImporter
         $prevQueueItem = $this->getImportScheduleUtility()->fetchPreviousEntry($importId, $importModelType);
         $doImport = true;
         if (!empty($listItem['modifiedAtRecursive'])) {
-            $modified = strtotime($listItem['modifiedAtRecursive']);
+            $modified = strtotime((string)$listItem['modifiedAtRecursive']);
         } elseif (!empty($listItem['modifiedAt'])) {
-            $modified = strtotime($listItem['modifiedAt']);
+            $modified = strtotime((string)$listItem['modifiedAt']);
         } else {
             $modified = null;
         }
         // If no previous queue item exist, the item will be imported
         if (!empty($prevQueueItem)) {
-            if (null !== $modified) {
+            if ($modified !== null) {
                 $hasChangedSinceLastImport = $modified > $prevQueueItem['last_modified_tstamp'];
             } else {
                 $hasChangedSinceLastImport = $prevQueueItem['data_hash'] !== $dataHash;
@@ -217,7 +249,7 @@ class ExtendedImporter
             if (!$this->debug || $this->debug === 'forceUpdate' || empty($prevQueueItem['import_data'])) {
                 $apiResponse = $apiConnector->fetchRecordData($importId, $importModelType);
             } else {
-                $apiResponse = json_decode($prevQueueItem['import_data'], true);
+                $apiResponse = json_decode((string)$prevQueueItem['import_data'], true);
                 if (empty($apiResponse) || !is_array($apiResponse) || empty($apiResponse['@type'])) {
                     $apiResponse = $apiConnector->fetchRecordData($importId, $importModelType);
                 }
@@ -261,7 +293,7 @@ class ExtendedImporter
 
     protected function getImportScheduleUtility()
     {
-        if (null === $this->importScheduleUtility) {
+        if ($this->importScheduleUtility === null) {
             $this->importScheduleUtility = GeneralUtility::makeInstance(ImportScheduleUtility::class);
         }
         return $this->importScheduleUtility;

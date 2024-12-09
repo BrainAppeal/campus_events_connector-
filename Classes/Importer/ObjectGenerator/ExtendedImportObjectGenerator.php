@@ -85,12 +85,12 @@ abstract class ExtendedImportObjectGenerator implements SingletonInterface
      * @param false $debug
      * @return array|ImportedModelInterface[]
      */
-    public function processQueue(array $dataMap, string $importSource, $pid, ExtendedFileImporter $fileImporter, $debug = false)
+    public function processQueue(array $dataMap, string $importSource, int $pid, ExtendedFileImporter $fileImporter, false $debug = false): array
     {
         $this->fileImporter = $fileImporter;
         $this->dataMap = $dataMap;
         $this->baseUri = $importSource;
-        $this->pid = (int)$pid;
+        $this->pid = $pid;
         $this->importMappingObjectStorage = [];
         /** @var ImportScheduleUtility $importScheduleUtility */
         $importScheduleUtility = GeneralUtility::makeInstance(ImportScheduleUtility::class);

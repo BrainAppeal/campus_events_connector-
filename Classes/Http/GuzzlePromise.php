@@ -19,12 +19,10 @@ use GuzzleHttp\Exception\GuzzleException;
 class GuzzlePromise implements PromiseInterface
 {
     /**
-     * @var \GuzzleHttp\Promise\Promise
+     * @param \GuzzleHttp\Promise\Promise $promise
      */
-    private $promise;
-
-    public function __construct($promise) {
-        $this->promise = $promise;
+    public function __construct(private $promise)
+    {
     }
 
     public function wait()
@@ -43,7 +41,7 @@ class GuzzlePromise implements PromiseInterface
 
     public function __call($name, $arguments) {
         if (method_exists($this->promise, $name)) {
-            return call_user_func_array(array($this->promise, $name), $arguments);
+            return call_user_func_array([$this->promise, $name], $arguments);
         }
         throw new \BadMethodCallException('Call to undefined method ' . static::class . "::$name()", 0);
     }

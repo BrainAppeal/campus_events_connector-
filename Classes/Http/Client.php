@@ -40,7 +40,7 @@ class Client
     private function isGuzzleAvailable()
     {
         if (null === self::$isGuzzleAvailable) {
-            self::$isGuzzleAvailable = class_exists('\GuzzleHttp\Client');
+            self::$isGuzzleAvailable = class_exists(\GuzzleHttp\Client::class);
         }
         return self::$isGuzzleAvailable;
     }
@@ -92,8 +92,8 @@ class Client
      */
     private function getAbsUrl($url)
     {
-        if (strpos($url, '/') === 0) {
-            $url = rtrim($this->config['base_uri'],'/') . $url;
+        if (str_starts_with($url, '/')) {
+            $url = rtrim((string) $this->config['base_uri'],'/') . $url;
         }
 
         return $url;

@@ -23,21 +23,6 @@ class Promise implements PromiseInterface
     const REJECTED = 'rejected';
 
     /**
-     * @var Client
-     */
-    private $client;
-
-    /**
-     * @var string
-     */
-    private $uri;
-
-    /**
-     * @var array
-     */
-    private $options;
-
-    /**
      * @var ResponseInterface
      */
     private $response;
@@ -48,11 +33,8 @@ class Promise implements PromiseInterface
      * @param string $uri
      * @param array $options
      */
-    public function __construct($client, $uri, $options)
+    public function __construct(private $client, private $uri, private $options)
     {
-        $this->client = $client;
-        $this->uri = $uri;
-        $this->options = $options;
     }
 
     /**

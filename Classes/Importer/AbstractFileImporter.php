@@ -50,7 +50,7 @@ abstract class AbstractFileImporter
     protected $updateReferenceIds;
 
     /**
-     * @var \TYPO3\CMS\Core\Resource\Folder
+     * @var ?\TYPO3\CMS\Core\Resource\Folder
      */
     protected $falFolder;
 
@@ -129,22 +129,22 @@ abstract class AbstractFileImporter
     }
 
     /**
-     * @return null|Folder|InaccessibleFolder
-     * @throws ExistingTargetFolderException
-     * @throws InsufficientFolderAccessPermissionsException
-     * @throws InsufficientFolderWritePermissionsException
+     * @return ?Folder
      */
-    private function getFalFolder()
+    private function getFalFolder(): ?Folder
     {
         if (null === $this->falFolder && null !== $storage = $this->getStorage()) {
             $storageFolder = $this->storageFolder;
-            if ($storage->hasFolder($storageFolder)) {
-                $falFolder = $storage->getFolder($storageFolder);
-            } else {
-                $falFolder = $storage->createFolder($storageFolder);
+            try {
+                if ($storage->hasFolder($storageFolder)) {
+                    $falFolder = $storage->getFolder($storageFolder);
+                } else {
+                    $falFolder = $storage->createFolder($storageFolder);
+                }
+                $this->falFolder = $falFolder;
+            } catch (\Throwable $e) {
+                $this->falFolder = null;
             }
-
-            $this->falFolder = $falFolder;
         }
 
         return $this->falFolder;
@@ -211,7 +211,7 @@ abstract class AbstractFileImporter
         if (!empty($this->newReferenceQueue) && null !== $falFolder = $this->getFalFolder()) {
             try {
                 $existingFiles = $falFolder->getFiles();
-            } catch (InsufficientFolderReadPermissionsException $e) {
+            } catch (InsufficientFolderReadPermissionsException) {
                 $existingFiles = [];
             }
             $allUsedFileNames = array_keys($this->mappingOfUsedFileNamesToReferenceUid);
@@ -229,7 +229,7 @@ abstract class AbstractFileImporter
                     try {
                         $file->delete();
                         $fileDeleteStates[$file->getName()] = 1;
-                    } catch (InsufficientFolderReadPermissionsException $e) {
+                    } catch (InsufficientFolderReadPermissionsException) {
                         $fileDeleteStates[$file->getName()] = -1;
                     }
                 } elseif (isset($newlyAddedFileNames[$file->getName()])) {
@@ -292,13 +292,17 @@ abstract class AbstractFileImporter
      *
      * @param int $importId
      * @param string $fileBaseName
-     * @return string
+     * @return ?string
      */
-    protected function getImportFileName(int $importId, string $fileBaseName): string
+    protected function getImportFileName(int $importId, string $fileBaseName): ?string
     {
         $filename = str_pad($importId, 4, "0", STR_PAD_LEFT) . '-' . $fileBaseName;
         $falFolder = $this->getFalFolder();
-        return $this->getStorage()->sanitizeFileName($filename, $falFolder);
+        $storage = $this->getStorage();
+        if ($falFolder !== null && $storage !== null) {
+            return $storage->sanitizeFileName($filename, $falFolder);
+        }
+        return null;
     }
 
     /**
@@ -401,7 +405,7 @@ abstract class AbstractFileImporter
     {
         try {
             $originalFile = $fileReference->getOriginalResource()->getOriginalFile();
-        } catch (ResourceDoesNotExistException $e) {
+        } catch (ResourceDoesNotExistException) {
             return false;
         }
         return !$originalFile->isMissing() && (null !== $storage = $originalFile->getStorage())

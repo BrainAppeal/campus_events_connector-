@@ -43,7 +43,7 @@ class ApiConnector
         $uri = sprintf('/api/%s/%s?ApiKey=%s',  urlencode((string) $this->apiVersion), urlencode((string) $data), urlencode((string) $this->apiKey));
 
         foreach ($additionalParams as $key => $value) {
-            $uri .= sprintf('&%s=%s', urlencode($key), urlencode($value));
+            $uri .= sprintf('&%s=%s', urlencode($key), urlencode((string) $value));
         }
 
         return $uri;
@@ -97,7 +97,7 @@ class ApiConnector
      */
     public function setBaseUri($baseUri)
     {
-        if (strpos($baseUri, 'http') === false) {
+        if (!str_contains($baseUri, 'http')) {
             $baseUri = 'https://' . $baseUri;
         }
         $this->baseUri = $baseUri;

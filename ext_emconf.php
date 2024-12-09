@@ -11,20 +11,18 @@
  * @link      https://www.campus-events.com/
  */
 
-/** @var string $_EXTKEY */
-$EM_CONF[$_EXTKEY] = [
+$EM_CONF['campus_events_connector'] = [
     'title' => 'CampusEvents Connector',
     'description' => 'Connecting the event software campus events with TYPO3, to import the event data into TYPO3 as data records. Get further information about Campus Events: www.campus-events.com',
     'category' => 'be',
-    'author' => 'Brain Appeal Team',
+    'author' => 'Brain Appeal DEV Team',
     'author_company' => 'Brain Appeal GmbH',
     'author_email' => 'info@brain-appeal.com',
     'state' => 'stable',
-    'clearCacheOnLoad' => 1,
-    'version' => '4.0.4',
+    'version' => '5.0.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '11.5.26-12.4.99',
+            'typo3' => '12.4.0-13.4.99',
         ],
         'conflicts' => [],
         'suggests' => [],

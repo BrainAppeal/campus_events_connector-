@@ -32,11 +32,6 @@ abstract class AbstractEventToObjectConverter implements EventConverterInterface
     protected $objectRepository;
 
     /**
-     * @var EventRepository
-     */
-    private $eventRepository;
-
-    /**
      * @var string
      */
     private $importSource;
@@ -53,16 +48,15 @@ abstract class AbstractEventToObjectConverter implements EventConverterInterface
 
     public function __construct(
         DataMapper      $dataMapper,
-        EventRepository $eventRepository)
+        private readonly EventRepository $eventRepository)
     {
         $this->dataMapper = $dataMapper;
-        $this->eventRepository = $eventRepository;
     }
 
     /**
      * @return AbstractImportedRepository
      */
-    private function getObjectRepository()
+    protected function getObjectRepository(): AbstractImportedRepository
     {
         if (null === $this->objectRepository) {
             throw new \InvalidArgumentException('Inject objectRepository in service constructor!');
@@ -70,15 +64,12 @@ abstract class AbstractEventToObjectConverter implements EventConverterInterface
 
         return $this->objectRepository;
     }
+
     /**
      * @return EventRepository
      */
-    private function getEventRepository()
+    private function getEventRepository(): EventRepository
     {
-        if (null === $this->eventRepository) {
-            throw new \InvalidArgumentException('Inject eventRepository in service constructor!');
-        }
-
         return $this->eventRepository;
     }
 
@@ -96,7 +87,7 @@ abstract class AbstractEventToObjectConverter implements EventConverterInterface
     private function setUp($configuration)
     {
         $dataMapper = GeneralUtility::makeInstance(DataMapper::class);
-        $this->importSource = $dataMapper->getDataMap(get_class($configuration))->getTableName() . ':' . $configuration->getUid();
+        $this->importSource = $dataMapper->getDataMap($configuration::class)->getTableName() . ':' . $configuration->getUid();
         $this->configuration = $configuration;
         // Set current language to "de" so news description translations are german
         if (null !== $languageService = $this->getLanguageService()) {
@@ -136,7 +127,7 @@ abstract class AbstractEventToObjectConverter implements EventConverterInterface
      * @param ConvertConfiguration $configuration
      * @api Use this method to individualize your object
      */
-    protected abstract function individualizeObjectByEvent($object, $event, $configuration);
+    protected abstract function individualizeObjectByEvent($object, $event, $configuration): void;
 
     /**
      * Returns true, if the event can be converted to the target object model; Override this function in custom

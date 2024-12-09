@@ -107,9 +107,9 @@ class ExtendedApiConnector
     {
         $url = self::BASE_PATH . $relativeUrl;
         if (!empty($additionalParams)) {
-            $paramStr = strpos($url, '?') === false ? '?' : '&';
+            $paramStr = !str_contains($url, '?') ? '?' : '&';
             foreach ($additionalParams as $key => $value) {
-                $url .= $paramStr . $key . '=' . urlencode($value);
+                $url .= $paramStr . $key . '=' . urlencode((string) $value);
                 $paramStr = '&';
             }
         }
@@ -185,7 +185,7 @@ class ExtendedApiConnector
      */
     public function setBaseUri($baseUri)
     {
-        if (strpos($baseUri, 'http') === false) {
+        if (!str_contains($baseUri, 'http')) {
             $baseUri = 'https://' . $baseUri;
         }
         $this->baseUri = $baseUri;
@@ -249,7 +249,7 @@ class ExtendedApiConnector
                 while ($importMore && $page < $maxPageCount) {
                     $importMore = false;
                     $nextPageUri = $apiResponse['hydra:view']['hydra:next'];
-                    preg_match('/'.preg_quote($pageParamPrefix, '/').'(\d+)/', $nextPageUri, $pageMatches);
+                    preg_match('/'.preg_quote($pageParamPrefix, '/').'(\d+)/', (string) $nextPageUri, $pageMatches);
                     if (!empty($pageMatches[1])) {
                         $nextPage = (int) $pageMatches[1];
                     }
@@ -392,7 +392,7 @@ class ExtendedApiConnector
      */
     protected static function getLogger()
     {
-        return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+        return GeneralUtility::makeInstance(LogManager::class)->getLogger(self::class);
     }
 
 }
